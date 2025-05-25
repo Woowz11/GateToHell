@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import java.util.Objects;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.util.Mth;
@@ -19,6 +18,8 @@ import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
+
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 public class LightTexture implements AutoCloseable {
@@ -35,7 +36,7 @@ public class LightTexture implements AutoCloseable {
     public LightTexture(GameRenderer p_109878_, Minecraft p_109879_) {
         this.renderer = p_109878_;
         this.minecraft = p_109879_;
-        this.target = new TextureTarget(16, 16, false);
+        this.target = new TextureTarget(TEXTURE_SIZE, TEXTURE_SIZE, false);
         this.target.setFilterMode(9729);
         this.target.setClearColor(1.0F, 1.0F, 1.0F, 1.0F);
         this.target.clear();

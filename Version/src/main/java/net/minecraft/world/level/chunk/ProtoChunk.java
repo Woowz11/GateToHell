@@ -2,16 +2,7 @@ package net.minecraft.world.level.chunk;
 
 import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.shorts.ShortList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Nullable;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.core.SectionPos;
+import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
@@ -36,6 +27,12 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.ticks.LevelChunkTicks;
 import net.minecraft.world.ticks.ProtoChunkTicks;
 import net.minecraft.world.ticks.TickContainerAccess;
+
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Map;
 
 public class ProtoChunk extends ChunkAccess {
     @Nullable

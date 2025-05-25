@@ -1,0 +1,5 @@
+/time set 0
+/stopsound
+/stopsound Player663
+/time set 1800
+/time set 18000

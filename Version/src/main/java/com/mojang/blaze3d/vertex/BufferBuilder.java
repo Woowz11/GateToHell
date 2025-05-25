@@ -1,13 +1,14 @@
 package com.mojang.blaze3d.vertex;
 
-import java.nio.ByteOrder;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.MemoryUtil;
+
+import javax.annotation.Nullable;
+import java.nio.ByteOrder;
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class BufferBuilder implements VertexConsumer {

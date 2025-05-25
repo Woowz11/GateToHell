@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer;
 
+import com.gatetohell.Curses;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -115,7 +116,7 @@ public class SkyRenderer implements AutoCloseable {
     }
 
     private void renderMoon(int p_367893_, float p_364034_, MultiBufferSource p_377520_, PoseStack p_369177_) {
-        float f = 20.0F;
+        float f = Curses.BigMoon ? 200 : 20;
         int i = p_367893_ % 4;
         int j = p_367893_ / 4 % 2;
         float f1 = (float)(i + 0) / 4.0F;
@@ -126,10 +127,10 @@ public class SkyRenderer implements AutoCloseable {
         VertexConsumer vertexconsumer = p_377520_.getBuffer(RenderType.celestial(MOON_LOCATION));
         int k = ARGB.white(p_364034_);
         Matrix4f matrix4f = p_369177_.last().pose();
-        vertexconsumer.addVertex(matrix4f, -20.0F, -100.0F, 20.0F).setUv(f3, f4).setColor(k);
-        vertexconsumer.addVertex(matrix4f, 20.0F, -100.0F, 20.0F).setUv(f1, f4).setColor(k);
-        vertexconsumer.addVertex(matrix4f, 20.0F, -100.0F, -20.0F).setUv(f1, f2).setColor(k);
-        vertexconsumer.addVertex(matrix4f, -20.0F, -100.0F, -20.0F).setUv(f3, f2).setColor(k);
+        vertexconsumer.addVertex(matrix4f, -f, -100.0F, f).setUv(f3, f4).setColor(k);
+        vertexconsumer.addVertex(matrix4f, f, -100.0F, f).setUv(f1, f4).setColor(k);
+        vertexconsumer.addVertex(matrix4f, f, -100.0F, -f).setUv(f1, f2).setColor(k);
+        vertexconsumer.addVertex(matrix4f, -f, -100.0F, -f).setUv(f3, f2).setColor(k);
     }
 
     private void renderStars(FogParameters p_362284_, float p_361462_, PoseStack p_364130_) {
@@ -138,7 +139,7 @@ public class SkyRenderer implements AutoCloseable {
         matrix4fstack.mul(p_364130_.last().pose());
         RenderSystem.setShaderColor(p_361462_, p_361462_, p_361462_, p_361462_);
         RenderSystem.setShaderFog(FogParameters.NO_FOG);
-        this.starBuffer.drawWithRenderType(RenderType.stars());
+        this.starBuffer.drawWithRenderType(Curses.BlackStars ? RenderType.solid() : RenderType.stars());
         RenderSystem.setShaderFog(p_362284_);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         matrix4fstack.popMatrix();

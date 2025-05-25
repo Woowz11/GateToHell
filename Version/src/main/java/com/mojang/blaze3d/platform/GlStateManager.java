@@ -1,33 +1,27 @@
 package com.mojang.blaze3d.platform;
 
+import com.gatetohell.Curses;
 import com.google.common.base.Charsets;
 import com.mojang.blaze3d.DontObfuscate;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.jtracy.Plot;
 import com.mojang.jtracy.TracyClient;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.function.Consumer;
-import java.util.stream.IntStream;
-import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL14;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL20C;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GL32;
-import org.lwjgl.opengl.GL32C;
+import org.lwjgl.opengl.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+
+import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 @OnlyIn(Dist.CLIENT)
 @DontObfuscate
@@ -711,10 +705,12 @@ public class GlStateManager {
     }
 
     public static void _clear(int p_84267_) {
-        RenderSystem.assertOnRenderThreadOrInit();
-        GL11.glClear(p_84267_);
-        if (MacosUtil.IS_MACOS) {
-            _getError();
+        if(!Curses.BrokeBufferClear) {
+            RenderSystem.assertOnRenderThreadOrInit();
+            GL11.glClear(p_84267_);
+            if (MacosUtil.IS_MACOS) {
+                _getError();
+            }
         }
     }
 
@@ -745,7 +741,7 @@ public class GlStateManager {
 
     public static void _drawElements(int p_157054_, int p_157055_, int p_157056_, long p_157057_) {
         RenderSystem.assertOnRenderThread();
-        GL11.glDrawElements(p_157054_, p_157055_, p_157056_, p_157057_);
+        GL11.glDrawElements(Curses.Wireframe ? GL11.GL_LINES : (Curses.FanTriangles ? GL30.GL_TRIANGLE_FAN : p_157054_ ), p_157055_, p_157056_, p_157057_);
     }
 
     public static void _pixelStore(int p_84523_, int p_84524_) {

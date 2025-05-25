@@ -1,17 +1,19 @@
 package com.mojang.blaze3d.audio;
 
+import com.gatetohell.Curses;
 import com.mojang.logging.LogUtils;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.concurrent.atomic.AtomicBoolean;
-import javax.annotation.Nullable;
-import javax.sound.sampled.AudioFormat;
 import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.openal.AL10;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import javax.sound.sampled.AudioFormat;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @OnlyIn(Dist.CLIENT)
 public class Channel {
@@ -95,7 +97,7 @@ public class Channel {
     }
 
     public void setPitch(float p_83651_) {
-        AL10.alSourcef(this.source, 4099, p_83651_);
+        AL10.alSourcef(this.source, 4099, (Curses.RandomSpeedSounds ? (float) Math.random()*4 : (p_83651_ * (Curses.SlowSounds ? 0.25f : (Curses.FastSounds ? 4 : 1)))));
     }
 
     public void setLooping(boolean p_83664_) {
