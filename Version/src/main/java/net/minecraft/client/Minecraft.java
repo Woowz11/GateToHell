@@ -1,5 +1,6 @@
 package net.minecraft.client;
 
+import com.gatetohell.GateToHell;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -805,6 +806,8 @@ public class Minecraft extends ReentrantBlockableEventLoop<Runnable> implements 
     }
 
     public void run() {
+        GateToHell.Start();
+
         this.gameThread = Thread.currentThread();
         if (Runtime.getRuntime().availableProcessors() > 4) {
             this.gameThread.setPriority(10);
