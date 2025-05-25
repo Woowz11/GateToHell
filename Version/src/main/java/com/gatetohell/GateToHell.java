@@ -15,46 +15,46 @@ public class GateToHell {
      */
 
     /* Отвечает за безумность игры */
-    public static int Madness = 0; /* M - Madness */
+    protected static int Madness = 0; /* M - Madness */
 
     /* Отвечает за страшность игры */
-    public static int Scariness = 0;  /* S - Scary */
+    protected static int Scariness = 0;  /* S - Scary */
 
     /* Отвечает за пустотность игры */
-    public static int Voidness = 0; /* V - Void */
+    protected static int Voidness = 0; /* V - Void */
 
     /* Отвечает за демоничность игры */
-    public static int Hellness = 0; /* D - Demonic */
+    protected static int Hellness = 0; /* D - Demonic */
 
     /* Отвечает за гличность */
-    public static int Glitchness = 0; /* B - Bugs */
+    protected static int Glitchness = 0; /* B - Bugs */
 
     /* Отвечает за жестокость */
-    public static int Goreness = 0; /* G - Gore */
+    protected static int Goreness = 0; /* G - Gore */
 
     /* Отвечает за лиминальность */
-    public static int Liminality = 0; /* L - Liminal */
+    protected static int Liminality = 0; /* L - Liminal */
 
     /* Отвечает за вувзкор-ность */
-    public static int Woowzcoreness = 0; /* W - Woowzcore */
+    protected static int Woowzcoreness = 0; /* W - Woowzcore */
 
     /* Отвечает за одиночество */
-    public static int Loneliness = 0; /* A - Alone */
+    protected static int Loneliness = 0; /* A - Alone */
 
     /* Отвечает за счастье */
-    public static int Happiness = 0; /* H - Happy */
+    protected static int Happiness = 0; /* H - Happy */
 
     /* Отвечает за музыкальность игры */
-    public static int Musical = 0; /* R - Rhythm */
+    protected static int Musical = 0; /* R - Rhythm */
 
     /* Делает так, что игра взаимодействует с пк */
-    public static int Hackness = 0; /* C - Crack */
+    protected static int Hackness = 0; /* C - Crack */
 
     /* Отвечает за загадочность */
-    public static int Mystery = 0; /* Q - Question */
+    protected static int Mystery = 0; /* Q - Question */
 
     /* Отвечает за литуизм */
-    public static int Lituism = 0; /* U - Universe */
+    protected static int Lituism = 0; /* U - Universe */
 
     /* ============================================= */
     /*
