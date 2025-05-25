@@ -5,8 +5,12 @@ import org.joml.Vector2i;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.*;
 
 public class DevWindow {
     static final Vector2i WindowSize = new Vector2i(750,1000);
@@ -14,6 +18,7 @@ public class DevWindow {
     /* ============================================= */
 
     static final Map<GTH_Value, ValueProgressbarInfo> ValueProgressBars = new HashMap<>();
+    static final List<CurseField> CurseFields = new ArrayList<>();
 
     static JFrame W = null;
 
@@ -35,6 +40,7 @@ public class DevWindow {
         Tabs = new JTabbedPane();
 
         CreateTab("Переменные", T_ValuesInfo());
+        CreateTab("Проклятья" , T_Curses    ());
 
         W.add(Tabs);
     }
@@ -45,6 +51,20 @@ public class DevWindow {
 
     /* ============================================= */
 
+    static class BorderListCellRenderer extends DefaultListCellRenderer {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+            if (isSelected) {
+                label.setBackground(list.getBackground());
+                label.setForeground(list.getForeground());
+            }
+
+            return label;
+        }
+    }
     public static JPanel T_ValuesInfo(){
         JPanel Content = new JPanel(new BorderLayout());
 
@@ -52,15 +72,45 @@ public class DevWindow {
         Left.setBackground(Color.LIGHT_GRAY);
         Left.setPreferredSize(new Dimension(WindowSize.x / 2, WindowSize.y));
 
-        JPanel Right = new JPanel();
+        /* -------------------------------------- */
+
+        JPanel Right = new JPanel(new BorderLayout());
+
+        Map<String, String> Values = new LinkedHashMap<>(){{
+            put("Персональный сид",String.valueOf(GateToHell.PersonalSeed));
+            put("Сид сессии"      ,String.valueOf(GateToHell.SessionSeed ));
+        }};
+
+        DefaultListModel<String> LeftListModel = new DefaultListModel<>();
+        DefaultListModel<String> RightListModel = new DefaultListModel<>();
+
+        for (Map.Entry<String, String> e : Values.entrySet()) {
+            LeftListModel .addElement(e.getKey());
+            RightListModel.addElement(e.getValue());
+        }
+
+        JList<String> LeftList  = new JList<String>(LeftListModel );
+        JList<String> RightList = new JList<String>(RightListModel);
+
+        LeftList .setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        RightList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+
+        LeftList .setCellRenderer(new BorderListCellRenderer());
+        RightList.setCellRenderer(new BorderListCellRenderer());
+
+        JPanel ValuesPanel = new JPanel();
+        ValuesPanel.setLayout(new GridLayout(1, 2));
+
+        ValuesPanel.add(LeftList );
+        ValuesPanel.add(RightList);
+
+        JScrollPane ScrollValuesPanel = new JScrollPane(ValuesPanel);
+        Right.add(ScrollValuesPanel, BorderLayout.CENTER);
+
+        /* -------------------------------------- */
 
         JPanel LeftTop = new JPanel();
         LeftTop.setLayout(new BoxLayout(LeftTop, BoxLayout.Y_AXIS));
-
-        JPanel LeftDown = new JPanel();
-        LeftDown.setBackground(Color.green);
-
-        /* -------------------------------------- */
 
         for(GTH_Value GTH_V : GTH_Value.values()){
             LeftTop.add(E_CreateValueProgressbar(GTH_V));
@@ -74,6 +124,11 @@ public class DevWindow {
 
         /* -------------------------------------- */
 
+        JPanel LeftDown = new JPanel();
+        LeftDown.setBackground(Color.green);
+
+        /* -------------------------------------- */
+
         JSplitPane SP_Left = new JSplitPane(JSplitPane.VERTICAL_SPLIT, LeftTop, LeftDown);
         SP_Left.setDividerLocation(WindowSize.y / 2);
         SP_Left.setEnabled(false);
@@ -84,6 +139,140 @@ public class DevWindow {
 
         Content.add(SP_Content, BorderLayout.CENTER);
 
+        return Content;
+    }
+
+    public enum CurseFieldType{ Checkbox }
+    public static class CurseField{
+        private final Field Field;
+        private final CurseFieldType Type;
+
+        private CurseField(Field Field, CurseFieldType Type){ this.Field = Field; this.Type = Type; }
+
+        public JLabel Text = null;
+        public JCheckBox Checkbox = null;
+        public ItemListener IL = null;
+
+        public void Update(){
+            switch (Type){
+                case Checkbox:
+                {
+                    Checkbox.removeItemListener(IL);
+                    try{
+                        boolean Value = this.Field.getBoolean(null);
+                        Checkbox.setSelected(Value);
+                    }catch(IllegalAccessException e){
+                        e.printStackTrace();
+                    }
+                    Checkbox.addItemListener(IL);
+                }
+            }
+        }
+
+        public void AddDesc(String Desc){
+            switch (Type){
+                case Checkbox:
+                {
+                    this.Text.setToolTipText(Desc);
+                    this.Checkbox.setToolTipText(Desc);
+                    break;
+                }
+            }
+        }
+    }
+    public static JPanel T_Curses(){
+        JPanel Content = new JPanel(new GridLayout(1, 3));
+        JPanel Column1 = new JPanel(new GridLayout(0, 1));
+        JPanel Column2 = new JPanel(new GridLayout(0, 1));
+        JPanel Column3 = new JPanel(new GridLayout(0, 1));
+
+        Column2.setBackground(Color.LIGHT_GRAY);
+
+        Map<String,String> Descs = new HashMap<>();
+
+        int WhatColumn = 0;
+        Field[] Fields = Curses.class.getDeclaredFields();
+        for(Field F : Fields){
+            if(Modifier.isStatic(F.getModifiers())){
+                F.setAccessible(true);
+
+                boolean ThatString = F.getType().equals(String.class);
+
+                if(ThatString){
+                    String Desc = "err?";
+
+                    try{
+                        Desc = (String) F.get(null);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                    Descs.put(F.getName().replace("_Desc",""), Desc);
+                    continue;
+                }
+
+                CurseFieldType Type = CurseFieldType.Checkbox;
+
+                CurseField CF = new CurseField(F, Type);
+
+                JPanel Result = new JPanel(new BorderLayout());
+                Result.setOpaque(false);
+
+                switch (Type){
+                    case Checkbox:
+                    {
+                        JLabel Name = new JLabel(F.getName());
+                        Name.setOpaque(false);
+                        JCheckBox Checkbox = new JCheckBox();
+                        Checkbox.setOpaque(false);
+
+                        Result.add(Name    , BorderLayout.WEST);
+                        Result.add(Checkbox, BorderLayout.EAST);
+
+                        CF.Text = Name;
+                        CF.Checkbox = Checkbox;
+
+                        CF.IL = (ItemEvent e) -> {
+                            try{
+                                F.setBoolean(null, Checkbox.isSelected());
+                            } catch (IllegalAccessException ex) {
+                                ex.printStackTrace();
+                            }
+                        };
+
+                        break;
+                    }
+                }
+
+                CF.Update();
+                CurseFields.add(CF);
+
+                switch (WhatColumn){
+                    case 0: Column1.add(Result); break;
+                    case 1: Column2.add(Result); break;
+                    case 2: Column3.add(Result); break;
+                }
+
+                WhatColumn++;
+                if(WhatColumn==3){ WhatColumn = 0; }
+            }
+        }
+
+        for(Map.Entry<String,String> e : Descs.entrySet()){
+            String FieldName = e.getKey();
+            String Desc      = e.getValue();
+
+            for(CurseField CF : CurseFields){
+                if(CF.Field.getName().equals(FieldName)){
+                    CF.AddDesc(Desc);
+                    break;
+                }
+            }
+        }
+
+        Content.add(Column1);
+        Content.add(Column2);
+        Content.add(Column3);
         return Content;
     }
 

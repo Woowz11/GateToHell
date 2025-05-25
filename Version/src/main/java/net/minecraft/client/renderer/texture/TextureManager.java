@@ -1,22 +1,10 @@
 package net.minecraft.client.renderer.texture;
 
+import com.gatetohell.Curses;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
 import com.mojang.realmsclient.gui.screens.AddRealmPopupScreen;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -26,6 +14,15 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.slf4j.Logger;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 @OnlyIn(Dist.CLIENT)
 public class TextureManager implements PreparableReloadListener, Tickable, AutoCloseable {
@@ -104,8 +101,16 @@ public class TextureManager implements PreparableReloadListener, Tickable, AutoC
         }
     }
 
+    /** Получить случайную текстуру из загруженных */
+    public AbstractTexture getRandomTexture(){
+        List<AbstractTexture> AT = new ArrayList<>(this.byPath.values());
+        return AT.get(new Random().nextInt(AT.size()));
+    }
+
     @Override
     public void tick() {
+        if(Curses.DisableAnimationTextures){return;}
+
         for (Tickable tickable : this.tickableTextures) {
             tickable.tick();
         }

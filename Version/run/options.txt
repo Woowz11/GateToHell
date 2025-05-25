@@ -1,7 +1,7 @@
 version:4189
 ao:true
 biomeBlendRadius:2
-enableVsync:true
+enableVsync:false
 entityDistanceScaling:1.0
 entityShadows:true
 forceUnicodeFont:false
@@ -16,14 +16,14 @@ fullscreen:false
 gamma:0.5
 graphicsMode:1
 guiScale:0
-maxFps:120
+maxFps:260
 inactivityFpsLimit:"afk"
 mipmapLevels:4
 narrator:0
 particles:0
 reducedDebugInfo:false
 renderClouds:"true"
-renderDistance:12
+renderDistance:8
 simulationDistance:12
 screenEffectScale:1.0
 soundDevice:""
@@ -62,7 +62,7 @@ textBackgroundOpacity:0.5
 backgroundForChatOnly:true
 hideServerAddress:false
 advancedItemTooltips:true
-pauseOnLostFocus:true
+pauseOnLostFocus:false
 overrideWidth:0
 overrideHeight:0
 chatHeightFocused:1.0

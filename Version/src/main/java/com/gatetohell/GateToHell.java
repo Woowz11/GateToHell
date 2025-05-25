@@ -1,5 +1,7 @@
 package com.gatetohell;
 
+import java.util.Random;
+
 public class GateToHell {
     /* Включён режим разработчика, или нет? */
     public static final boolean Dev = true;
@@ -107,13 +109,15 @@ public class GateToHell {
     /* ============================================= */
 
     /* Персональный сид */
-    public static int PersonalSeed = 0;
+    public static long PersonalSeed = 0;
     /* Сид сессии */
-    public static int SessionSeed  = 0;
+    public static long SessionSeed  = 0;
 
     /* ============================================= */
 
     public static void Start(){
+        SessionSeed = new Random().nextLong();
+
         if(Dev){
             DevWindow.CreateWindow();
         }

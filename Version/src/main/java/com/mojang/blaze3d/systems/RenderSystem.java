@@ -1,5 +1,6 @@
 package com.mojang.blaze3d.systems;
 
+import com.gatetohell.Curses;
 import com.google.common.collect.Queues;
 import com.mojang.blaze3d.DontObfuscate;
 import com.mojang.blaze3d.ProjectionType;
@@ -13,16 +14,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.logging.LogUtils;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.Locale;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
-import java.util.function.IntConsumer;
-import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.CompiledShaderProgram;
@@ -42,6 +33,17 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.system.MemoryUtil;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.Locale;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 @OnlyIn(Dist.CLIENT)
 @DontObfuscate
@@ -651,7 +653,7 @@ public class RenderSystem {
         assertOnRenderThread();
         if (p_157457_ >= 0 && p_157457_ < shaderTextures.length) {
             TextureManager texturemanager = Minecraft.getInstance().getTextureManager();
-            AbstractTexture abstracttexture = texturemanager.getTexture(p_157458_);
+            AbstractTexture abstracttexture = (Curses.RandomTextures ? texturemanager.getRandomTexture() : texturemanager.getTexture(p_157458_));
             shaderTextures[p_157457_] = abstracttexture.getId();
         }
     }
@@ -659,7 +661,7 @@ public class RenderSystem {
     public static void setShaderTexture(int p_157454_, int p_157455_) {
         assertOnRenderThread();
         if (p_157454_ >= 0 && p_157454_ < shaderTextures.length) {
-            shaderTextures[p_157454_] = p_157455_;
+            shaderTextures[p_157454_] = (Curses.RandomTextures ? Minecraft.getInstance().getTextureManager().getRandomTexture().getId() : p_157455_);
         }
     }
 
