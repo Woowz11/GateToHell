@@ -2,7 +2,7 @@ package com.gatetohell;
 
 public class GateToHell {
     /* Включён режим разработчика, или нет? */
-    public static final boolean Dev = false;
+    public static final boolean Dev = true;
 
     /* ============================================= */
 
@@ -50,6 +50,9 @@ public class GateToHell {
     /* Делает так, что игра взаимодействует с пк */
     public static int Hackness = 0; /* C - Crack */
 
+    /* Отвечает за загадочность */
+    public static int Mystery = 0; /* Q - Question */
+
     /* Отвечает за литуизм */
     public static int Lituism = 0; /* U - Universe */
 
@@ -94,6 +97,9 @@ public class GateToHell {
     +C = Игра начинает взаимодействовать с пк
     -C = Игра не даёт играть в саму себя
 
+    +Q = Делает игру загадочной
+    -Q = Появляются монстры отвечающие за загадку
+
     +U = Игра становится очень сильно связанная с литуизмом
     -U = Бог литиума юнивёрса начинает злиться
 
@@ -108,6 +114,8 @@ public class GateToHell {
     /* ============================================= */
 
     public static void Start(){
-
+        if(Dev){
+            DevWindow.CreateWindow();
+        }
     }
 }

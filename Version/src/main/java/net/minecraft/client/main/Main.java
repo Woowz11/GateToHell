@@ -293,8 +293,4 @@ public class Main {
             return false;
         }
     }
-
-    static {
-        System.setProperty("java.awt.headless", "true");
-    }
 }
