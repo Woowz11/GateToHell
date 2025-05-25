@@ -13,7 +13,6 @@ buildscript {
 
 import net.minecraftforge.gradle.common.util.Utils
 import net.minecraftforge.gradle.common.util.VersionJson
-import org.jetbrains.gradle.ext.*
 
 apply plugin: 'eclipse'
 apply plugin: 'net.minecraftforge.gradle.patcher'
@@ -47,11 +46,6 @@ repositories {
 
 dependencies {
     implementation 'net.minecraftforge:forgespi:' + spi_version
-//    Use the shade to add the lib to the jar
-//    or use compile if you want to load the lib from the version.json
-//    from a maven repo
-//    shade 'package-here'
-//    compile 'package-here'
 }
 
 project(':mcp') {
@@ -132,14 +126,4 @@ tasks.register('runserver', JavaExec) {
     classpath sourceSets.main.runtimeClasspath
     main 'net.minecraft.server.Main'
     workingDir 'runserver'
-}
-
-idea.project.settings {
-    runConfigurations {
-        "Minecraft"(Application) {
-            mainClass = 'mcp.client.Start'
-            workingDirectory = "$projectDir/run"
-            moduleName = idea.module.name + '.main'
-        }
-    }
 }
