@@ -84,13 +84,10 @@ tasks.register('runclient', JavaExec) {
     }
 
     var runFolder = file('run')
-    var versionJson = Utils.loadJson(downloadAssets.getMeta().get().getAsFile(), VersionJson.class)
 
     workingDir runFolder
-    args '--gameDir', '.'
+    args '--gameDir', runFolder
     args '--version', minecraft_version
-    args '--assetsDir', runFolder.relativePath(assetsFolder)
-    args '--assetIndex', versionJson.assetIndex.id
     args '--accessToken', '0'
     main 'net.minecraft.client.main.Main'
 }
