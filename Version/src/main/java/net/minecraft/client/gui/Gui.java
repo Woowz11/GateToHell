@@ -1,25 +1,14 @@
 package net.minecraft.client.gui;
 
+import com.gatetohell.Curses;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.AttackIndicatorStatus;
-import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
-import net.minecraft.client.gui.components.BossHealthOverlay;
-import net.minecraft.client.gui.components.ChatComponent;
-import net.minecraft.client.gui.components.DebugScreenOverlay;
-import net.minecraft.client.gui.components.PlayerTabOverlay;
-import net.minecraft.client.gui.components.SubtitleOverlay;
+import net.minecraft.client.*;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.spectator.SpectatorGui;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
@@ -45,11 +34,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PlayerRideableJumping;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
@@ -62,14 +47,15 @@ import net.minecraft.world.level.border.WorldBorder;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.scores.DisplaySlot;
-import net.minecraft.world.scores.Objective;
-import net.minecraft.world.scores.PlayerScoreEntry;
-import net.minecraft.world.scores.PlayerTeam;
-import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.scores.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4fStack;
+
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class Gui {
@@ -216,7 +202,7 @@ public class Gui {
     }
 
     private void renderCameraOverlays(GuiGraphics p_333627_, DeltaTracker p_344236_) {
-        if (Minecraft.useFancyGraphics()) {
+        if (Minecraft.useFancyGraphics() && !Curses.BrokeBufferClear && !Curses.BrokeSkyBufferClear) {
             this.renderVignette(p_333627_, this.minecraft.getCameraEntity());
         }
 

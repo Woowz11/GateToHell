@@ -116,7 +116,7 @@ public class SkyRenderer implements AutoCloseable {
     }
 
     private void renderMoon(int p_367893_, float p_364034_, MultiBufferSource p_377520_, PoseStack p_369177_) {
-        float f = Curses.BigMoon ? 200 : 20;
+        float f = 20 * ((float)Curses.MoonSize + 1);
         int i = p_367893_ % 4;
         int j = p_367893_ / 4 % 2;
         float f1 = (float)(i + 0) / 4.0F;

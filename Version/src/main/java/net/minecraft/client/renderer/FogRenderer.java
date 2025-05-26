@@ -1,9 +1,8 @@
 package net.minecraft.client.renderer;
 
+import com.gatetohell.Curses;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.shaders.FogShape;
-import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,6 +26,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class FogRenderer {
@@ -84,6 +86,8 @@ public class FogRenderer {
             f2 = 0.785F;
             biomeChangedTime = -1L;
         } else {
+            if(Curses.BlackSky){ return new Vector4f(); }
+
             float f7 = 0.25F + 0.75F * (float)p_361512_ / 32.0F;
             f7 = 1.0F - (float)Math.pow((double)f7, 0.25);
             int j = p_361507_.getSkyColor(p_362477_.getPosition(), p_364035_);

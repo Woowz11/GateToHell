@@ -741,7 +741,7 @@ public class GlStateManager {
 
     public static void _drawElements(int p_157054_, int p_157055_, int p_157056_, long p_157057_) {
         RenderSystem.assertOnRenderThread();
-        GL11.glDrawElements(Curses.Wireframe ? GL11.GL_LINES : (Curses.FanTriangles ? GL30.GL_TRIANGLE_FAN : p_157054_ ), p_157055_, p_157056_, p_157057_);
+        GL11.glDrawElements(Curses.Wireframe ? (Curses.FanTriangles ? GL11.GL_LINE_STRIP : GL11.GL_LINES ) : (Curses.FanTriangles ? GL30.GL_TRIANGLE_FAN : p_157054_ ), p_157055_, p_157056_, p_157057_);
     }
 
     public static void _pixelStore(int p_84523_, int p_84524_) {

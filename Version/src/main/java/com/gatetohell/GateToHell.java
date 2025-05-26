@@ -110,16 +110,34 @@ public class GateToHell {
 
     /* Персональный сид */
     public static long PersonalSeed = 0;
+
     /* Сид сессии */
     public static long SessionSeed  = 0;
+
+    private static long StartTime = -1;
+
+    /* Прошло времени с запуска (в секундах) */
+    public static double TimeAfterStart = -1;
 
     /* ============================================= */
 
     public static void Start(){
         SessionSeed = new Random().nextLong();
 
+        StartTime = System.nanoTime();
+
         if(Dev){
             DevWindow.CreateWindow();
         }
+    }
+
+    public static void Cycle(){
+        if(Dev){
+            if(DevWindow.W.isVisible()) {
+                DevWindow.UpdateTabContent();
+            }
+        }
+
+        TimeAfterStart = (System.nanoTime() - StartTime) / 1_000_000_000.0;
     }
 }

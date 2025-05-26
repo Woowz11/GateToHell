@@ -13,6 +13,9 @@ public class Curses {
     public static final String BrokeBufferClear_Desc = "Убирает очистку графического буфера";
     public static boolean BrokeBufferClear = false;
 
+    public static final String BrokeSkyBufferClear_Desc = "Убирает очистку у неба";
+    public static boolean BrokeSkyBufferClear = false;
+
     public static final String Wireframe_Desc = "Делает всё состоящим из сеток";
     public static boolean Wireframe = false;
 
@@ -31,6 +34,9 @@ public class Curses {
     public static final String BlackStars_Desc = "Делает чёрные звёзды";
     public static boolean BlackStars = false;
 
-    public static final String BigMoon_Desc = "Делает луну большой";
-    public static boolean BigMoon = false;
+    public static final String BlackSky_Desc = "Делает чёрное небо";
+    public static boolean BlackSky = false;
+
+    public static final String MoonSize_Desc = "Меняет размер луны";
+    public static double MoonSize = 1;
 }

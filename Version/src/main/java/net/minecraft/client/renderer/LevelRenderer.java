@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer;
 
+import com.gatetohell.Curses;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
@@ -13,38 +14,20 @@ import com.mojang.blaze3d.resource.RenderTargetDescriptor;
 import com.mojang.blaze3d.resource.ResourceHandle;
 import com.mojang.blaze3d.shaders.Uniform;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
-import com.mojang.blaze3d.vertex.VertexBuffer;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexMultiConsumer;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap.Entry;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectListIterator;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.SortedSet;
-import javax.annotation.Nullable;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 import net.minecraft.Util;
-import net.minecraft.client.Camera;
-import net.minecraft.client.CloudStatus;
-import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.GraphicsStatus;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.PrioritizeChunkUpdates;
+import net.minecraft.client.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.player.LocalPlayer;
@@ -92,6 +75,9 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.joml.Vector4f;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseable {
@@ -468,12 +454,14 @@ public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseab
 
         FramePass framepass = framegraphbuilder.addPass("clear");
         this.targets.main = framepass.readsAndWrites(this.targets.main);
-        framepass.executes(() -> {
-            RenderSystem.clearColor(vector4f.x, vector4f.y, vector4f.z, 0.0F);
-            RenderSystem.clear(16640);
-        });
-        if (!flag1) {
-            this.addSkyPass(framegraphbuilder, p_109604_, f, fogparameters1);
+        if(!Curses.BrokeSkyBufferClear) {
+            framepass.executes(() -> {
+                RenderSystem.clearColor(vector4f.x, vector4f.y, vector4f.z, 0.0F);
+                RenderSystem.clear(16640);
+            });
+            if (!flag1) {
+                this.addSkyPass(framegraphbuilder, p_109604_, f, fogparameters1);
+            }
         }
 
         this.addMainPass(framegraphbuilder, frustum, p_109604_, p_254120_, p_330527_, fogparameters, p_109603_, flag2, p_342180_, profilerfiller);
@@ -483,13 +471,16 @@ public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseab
         }
 
         this.addParticlesPass(framegraphbuilder, p_109604_, f, fogparameters);
-        CloudStatus cloudstatus = this.minecraft.options.getCloudsType();
-        if (cloudstatus != CloudStatus.OFF) {
-            float f2 = this.level.effects().getCloudHeight();
-            if (!Float.isNaN(f2)) {
-                float f3 = (float)this.ticks + f;
-                int k = this.level.getCloudColor(f);
-                this.addCloudsPass(framegraphbuilder, p_254120_, p_330527_, cloudstatus, p_109604_.getPosition(), f3, k, f2 + 0.33F);
+
+        if(!Curses.BlackSky) {
+            CloudStatus cloudstatus = this.minecraft.options.getCloudsType();
+            if (cloudstatus != CloudStatus.OFF) {
+                float f2 = this.level.effects().getCloudHeight();
+                if (!Float.isNaN(f2)) {
+                    float f3 = (float) this.ticks + f;
+                    int k = this.level.getCloudColor(f);
+                    this.addCloudsPass(framegraphbuilder, p_254120_, p_330527_, cloudstatus, p_109604_.getPosition(), f3, k, f2 + 0.33F);
+                }
             }
         }
 
@@ -1061,10 +1052,10 @@ public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseab
                         int i = dimensionspecialeffects.getSunriseOrSunsetColor(f1);
                         int j = this.level.getMoonPhase();
                         int k = this.level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), p_368085_);
-                        float f4 = ARGB.redFloat(k);
-                        float f5 = ARGB.greenFloat(k);
-                        float f6 = ARGB.blueFloat(k);
-                        this.skyRenderer.renderSkyDisc(f4, f5, f6);
+                        float r = ARGB.redFloat(k);
+                        float g = ARGB.greenFloat(k);
+                        float b = ARGB.blueFloat(k);
+                        if(!Curses.BlackSky){ this.skyRenderer.renderSkyDisc(r, g, b); }
                         MultiBufferSource.BufferSource multibuffersource$buffersource = this.renderBuffers.bufferSource();
                         if (dimensionspecialeffects.isSunriseOrSunset(f1)) {
                             this.skyRenderer.renderSunriseAndSunset(posestack, multibuffersource$buffersource, f, i);

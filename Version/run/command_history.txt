@@ -3,3 +3,12 @@
 /stopsound Player663
 /time set 1800
 /time set 18000
+/time set 0
+/time set 18000
+/time set 0
+/time set night
+/time set 18000
+/time set 0
+/setblock ~ ~ ~ minecraft:ender_chest
+/setblock ~ ~ ~ minecraft:end_portal_frame
+/setblock ~ ~ ~ minecraft:end_portal
