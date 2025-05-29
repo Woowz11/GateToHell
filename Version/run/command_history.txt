@@ -17,3 +17,30 @@
 /gamerule maxEntityCramming
 /gamerule maxEntityCramming 50
 /gamerule maxEntityCramming 100
+/time set 0
+/gamemode survival
+/we
+/login 77777
+/login 777777
+/login 1324fqfq
+/login 1423fqfq
+/reg 777777 777777
+/register 777777 777777
+/reg 777777 777777
+/register 777777 777777
+/gamemode creative
+/setblock ~ ~ ~ minecraft:end_portal
+/kill @e[type=!minecraft:player]
+/summon minecraft:ender_dragon
+/kill
+/time set 0
+/test
+/warden_spawn_tracker
+/hello my name is papo
+/gamerule keepInventory true
+/gamemode /spaw @a
+/clear
+/clear Woowz12
+/kill
+/gamemode survival
+/time set 0

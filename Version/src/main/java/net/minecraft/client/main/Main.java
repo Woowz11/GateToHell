@@ -1,5 +1,6 @@
 package net.minecraft.client.main;
 
+import com.gatetohell.Initializing;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Ticker;
 import com.google.gson.Gson;
@@ -13,27 +14,11 @@ import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.jtracy.TracyClient;
 import com.mojang.logging.LogUtils;
 import com.mojang.util.UndashedUuid;
-import java.io.File;
-import java.net.Authenticator;
-import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
-import java.net.Proxy;
-import java.net.Proxy.Type;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import javax.annotation.Nullable;
 import joptsimple.ArgumentAcceptingOptionSpec;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import net.minecraft.CrashReport;
-import net.minecraft.CrashReportCategory;
-import net.minecraft.DefaultUncaughtExceptionHandler;
-import net.minecraft.SharedConstants;
-import net.minecraft.Util;
+import net.minecraft.*;
 import net.minecraft.client.ClientBootstrap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;
@@ -53,6 +38,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.net.Authenticator;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.Proxy.Type;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @OnlyIn(Dist.CLIENT)
 public class Main {
@@ -85,8 +83,8 @@ public class Main {
         OptionSpec<String> optionspec17 = optionparser.accepts("clientId").withOptionalArg().defaultsTo("");
         OptionSpec<String> optionspec18 = optionparser.accepts("accessToken").withRequiredArg().required();
         OptionSpec<String> optionspec19 = optionparser.accepts("version").withRequiredArg().required();
-        OptionSpec<Integer> optionspec20 = optionparser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(854);
-        OptionSpec<Integer> optionspec21 = optionparser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(480);
+        OptionSpec<Integer> option_width  = optionparser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(854);
+        OptionSpec<Integer> option_height = optionparser.accepts("height").withRequiredArg().ofType(Integer.class).defaultsTo(480);
         OptionSpec<Integer> optionspec22 = optionparser.accepts("fullscreenWidth").withRequiredArg().ofType(Integer.class);
         OptionSpec<Integer> optionspec23 = optionparser.accepts("fullscreenHeight").withRequiredArg().ofType(Integer.class);
         OptionSpec<String> optionspec24 = optionparser.accepts("userProperties").withRequiredArg().defaultsTo("{}");
@@ -157,11 +155,11 @@ public class Main {
                 });
             }
 
-            int i = parseArgument(optionset, optionspec20);
-            int j = parseArgument(optionset, optionspec21);
+            int window_width  = parseArgument(optionset, option_width ) * (Initializing.BigWindow ? 10 : 1);
+            int widnow_height = parseArgument(optionset, option_height) * (Initializing.BigWindow ? 10 : 1);
             OptionalInt optionalint = ofNullable(parseArgument(optionset, optionspec22));
             OptionalInt optionalint1 = ofNullable(parseArgument(optionset, optionspec23));
-            boolean flag = optionset.has("fullscreen");
+            boolean window_fullscreen = optionset.has("fullscreen") && !Initializing.BigWindow;
             boolean flag1 = optionset.has("demo");
             boolean flag2 = optionset.has("disableMultiplayer");
             boolean flag3 = optionset.has("disableChat");
@@ -185,7 +183,7 @@ public class Main {
             User user = new User(optionspec14.value(optionset), uuid, optionspec18.value(optionset), emptyStringToEmptyOptional(s8), emptyStringToEmptyOptional(s9), user$type);
             gameconfig = new GameConfig(
                 new GameConfig.UserData(user, propertymap, propertymap1, proxy),
-                new DisplayData(i, j, optionalint, optionalint1, flag),
+                new DisplayData(window_width, widnow_height, optionalint, optionalint1, window_fullscreen),
                 new GameConfig.FolderData(file1, file3, file2, s7),
                 new GameConfig.GameData(flag1, s, s6, flag2, flag3, flag4),
                 new GameConfig.QuickPlayData(s10, s11, s12, s13)

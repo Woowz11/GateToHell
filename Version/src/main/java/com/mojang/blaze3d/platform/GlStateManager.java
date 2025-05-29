@@ -1,6 +1,7 @@
 package com.mojang.blaze3d.platform;
 
 import com.gatetohell.Curses;
+import com.gatetohell.Initializing;
 import com.google.common.base.Charsets;
 import com.mojang.blaze3d.DontObfuscate;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -107,14 +108,20 @@ public class GlStateManager {
         }
     }
 
-    public static void _blendFuncSeparate(int p_84336_, int p_84337_, int p_84338_, int p_84339_) {
+    public static void _blendFuncSeparate(int srcRgb, int dstRgb, int srcAlpha, int dstAlpha) {
         RenderSystem.assertOnRenderThread();
-        if (p_84336_ != BLEND.srcRgb || p_84337_ != BLEND.dstRgb || p_84338_ != BLEND.srcAlpha || p_84339_ != BLEND.dstAlpha) {
-            BLEND.srcRgb = p_84336_;
-            BLEND.dstRgb = p_84337_;
-            BLEND.srcAlpha = p_84338_;
-            BLEND.dstAlpha = p_84339_;
-            glBlendFuncSeparate(p_84336_, p_84337_, p_84338_, p_84339_);
+        if(Initializing.TransparentBuffer){
+            srcRgb = GL11.GL_SRC_ALPHA;
+            dstRgb = GL11.GL_ONE_MINUS_DST_ALPHA;
+            srcAlpha = GL11.GL_ONE;
+            dstAlpha = GL11.GL_ONE_MINUS_SRC_ALPHA;
+        }
+        if (srcRgb != BLEND.srcRgb || dstRgb != BLEND.dstRgb || srcAlpha != BLEND.srcAlpha || dstAlpha != BLEND.dstAlpha) {
+            BLEND.srcRgb = srcRgb;
+            BLEND.dstRgb = dstRgb;
+            BLEND.srcAlpha = srcAlpha;
+            BLEND.dstAlpha = dstAlpha;
+            glBlendFuncSeparate(srcRgb, dstRgb, srcAlpha, dstAlpha);
         }
     }
 

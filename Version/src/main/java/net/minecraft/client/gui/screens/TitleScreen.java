@@ -4,21 +4,11 @@ import com.mojang.authlib.minecraft.BanDetails;
 import com.mojang.logging.LogUtils;
 import com.mojang.realmsclient.RealmsMainScreen;
 import com.mojang.realmsclient.gui.screens.RealmsNotificationsScreen;
-import java.io.IOException;
-import java.util.Objects;
-import javax.annotation.Nullable;
 import net.minecraft.SharedConstants;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CommonButtons;
-import net.minecraft.client.gui.components.LogoRenderer;
-import net.minecraft.client.gui.components.PlainTextButton;
-import net.minecraft.client.gui.components.SplashRenderer;
-import net.minecraft.client.gui.components.SpriteIconButton;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.components.toasts.SystemToast;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
@@ -41,6 +31,10 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 public class TitleScreen extends Screen {
@@ -117,7 +111,7 @@ public class TitleScreen extends Screen {
             l = this.createNormalMenuOptions(l, 24);
         }
 
-        l = this.createTestWorldButton(l, 24);
+        l = this.createTestWorldButton(l, k);
         SpriteIconButton spriteiconbutton = this.addRenderableWidget(
             CommonButtons.language(
                 20, p_340809_ -> this.minecraft.setScreen(new LanguageSelectScreen(this, this.minecraft.options, this.minecraft.getLanguageManager())), true

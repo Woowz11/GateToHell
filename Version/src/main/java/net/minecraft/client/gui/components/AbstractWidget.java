@@ -1,8 +1,6 @@
 package net.minecraft.client.gui.components;
 
-import java.time.Duration;
-import java.util.function.Consumer;
-import javax.annotation.Nullable;
+import com.gatetohell.Curses;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
@@ -23,6 +21,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
+import java.time.Duration;
+import java.util.function.Consumer;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractWidget implements Renderable, GuiEventListener, LayoutElement, NarratableEntry {
@@ -123,18 +125,13 @@ public abstract class AbstractWidget implements Renderable, GuiEventListener, La
         renderScrollingString(p_281857_, p_282790_, this.getMessage(), i, this.getY(), j, this.getY() + this.getHeight(), p_282944_);
     }
 
-    public void onClick(double p_93634_, double p_93635_) {
-    }
-
-    public void onRelease(double p_93669_, double p_93670_) {
-    }
-
-    protected void onDrag(double p_93636_, double p_93637_, double p_93638_, double p_93639_) {
-    }
+    public void onClick(double p_93634_, double p_93635_) {}
+    public void onRelease(double p_93669_, double p_93670_) {}
+    protected void onDrag(double p_93636_, double p_93637_, double p_93638_, double p_93639_) {}
 
     @Override
     public boolean mouseClicked(double p_93641_, double p_93642_, int p_93643_) {
-        if (this.active && this.visible) {
+        if (this.active && this.visible && (this instanceof AbstractButton && !Curses.NoButtons)) {
             if (this.isValidClickButton(p_93643_)) {
                 boolean flag = this.isMouseOver(p_93641_, p_93642_);
                 if (flag) {

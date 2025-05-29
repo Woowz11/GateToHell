@@ -2,14 +2,16 @@ package com.gatetohell;
 
 import org.joml.Vector2i;
 
-import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.*;
@@ -21,8 +23,9 @@ public class DevWindow {
     /* ============================================= */
 
     static final Map<GTH_Value, ValueProgressbarInfo> ValueProgressBars = new HashMap<>();
-    static final List<ValueInfo>  ValueInfos  = new ArrayList<>();
-    static final List<CurseField> CurseFields = new ArrayList<>();
+    static final List<ValueInfo>   ValueInfos   = new ArrayList<>();
+    static final List<CurseField>  CurseFields  = new ArrayList<>();
+    static final List<EventMethod> EventMethods = new ArrayList<>();
 
     static JFrame W = null;
 
@@ -44,9 +47,11 @@ public class DevWindow {
     private static void CreateWindowContent(){
         Tabs = new JTabbedPane();
 
-        CreateTab("Переменные", T_ValuesInfo()); /* 0 */
-        CreateTab("Проклятья" , T_Curses    ()); /* 1 */
-        CreateTab("Ивенты"    , T_Events    ()); /* 2 */
+        CreateTab("Переменные"      , T_ValuesInfo()); /* 0 */
+        CreateTab("Проклятья"       , T_Curses    ()); /* 1 */
+        CreateTab("Инициализируемое", T_Events    ()); /* 2 */
+        CreateTab("Ивенты"          , T_Events    ()); /* 3 */
+        CreateTab("Проклятья ивенты", T_Events    ()); /* 4 */
 
         Tabs.addChangeListener((e) -> {
             SelectedTab = Tabs.getSelectedIndex();
@@ -122,7 +127,7 @@ public class DevWindow {
             }
         }
     }
-    private static int NumberValueRange = 0;
+    private static int NumberValueRange = 1;
     private static JPanel T_ValuesInfo(){
         JPanel Content = new JPanel(new BorderLayout());
 
@@ -155,10 +160,10 @@ public class DevWindow {
                 I++;
             }
 
-            JList<String> LeftList = new JList<>(LeftListModel);
+            JList<String> LeftList  = new JList<>(LeftListModel );
             JList<String> RightList = new JList<>(RightListModel);
 
-            LeftList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+            LeftList .setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
             RightList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
             LeftList.setCellRenderer(new BorderListCellRenderer());
@@ -196,6 +201,10 @@ public class DevWindow {
 
         JSpinner NumberRange = new JSpinner(new SpinnerNumberModel(NumberValueRange, -1000, 1000, 1));
 
+        NumberRange.addChangeListener(e -> {
+            NumberValueRange = (Integer) NumberRange.getValue();
+        });
+
         LeftDown.add(NumberRange);
 
         /* -------------------------------------- */
@@ -213,10 +222,30 @@ public class DevWindow {
         return Content;
     }
 
+    private static JPanel CreateEvalPanel(boolean Eval){
+        JPanel Result = null;
+        if(Eval) {
+            Result = new JPanel(new GridBagLayout()) {
+                @Override
+                protected void paintComponent(Graphics g) {
+                    super.paintComponent(g);
+                    Graphics2D g2D = (Graphics2D) g;
+                    g2D.setColor(new Color(0, 0, 0, 10));
+                    g2D.fillRect(0, 0, getWidth(), getHeight());
+                }
+            };
+        }else{
+            Result = new JPanel(new GridBagLayout());
+        }
+
+        Result.setOpaque(false);
+        return Result;
+    }
     private enum CurseFieldType{ Checkbox, Range}
     private static class CurseField{
         private final Field Field;
         private final CurseFieldType Type;
+        protected boolean HasDesc = false;
 
         private CurseField(Field Field, CurseFieldType Type){ this.Field = Field; this.Type = Type; }
 
@@ -255,6 +284,7 @@ public class DevWindow {
         }
 
         protected void AddDesc(String Desc){
+            HasDesc = true;
             switch (Type){
                 case Checkbox:
                 {
@@ -282,6 +312,8 @@ public class DevWindow {
         Map<String,String> Descs = new HashMap<>();
 
         int WhatColumn = 0;
+        boolean Eval = false;
+        int i = 0;
         Field[] Fields = Curses.class.getDeclaredFields();
         for(Field F : Fields){
             if(Modifier.isStatic(F.getModifiers()) && !Modifier.isPrivate(F.getModifiers())){
@@ -302,6 +334,8 @@ public class DevWindow {
                     continue;
                 }
 
+                i++;
+
                 CurseFieldType Type = CurseFieldType.Checkbox;
                 if(F.getType().equals(double.class) || F.getType().equals(Double.class)){
                     Type = CurseFieldType.Range;
@@ -309,19 +343,35 @@ public class DevWindow {
 
                 CurseField CF = new CurseField(F, Type);
 
-                JPanel Result = new JPanel(new GridLayout(1, 2));
-                Result.setOpaque(false);
+                switch (WhatColumn){
+                    case 0: Eval = Column1.getComponentCount() % 2 == 0; break;
+                    case 1: Eval = Column2.getComponentCount() % 2 == 0; break;
+                    case 2: Eval = Column3.getComponentCount() % 2 == 0; break;
+                }
+
+                JPanel Result = CreateEvalPanel(Eval);
+
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.BOTH;
+                gbc.weighty = 1;
+                gbc.gridy = 0;
+
+                String FName = "[" + i + "] " + F.getName();
 
                 switch (Type){
                     case Checkbox:
                     {
-                        JLabel Name = new JLabel(F.getName());
+                        JLabel Name = new JLabel(FName);
                         Name.setOpaque(false);
                         JCheckBox Checkbox = new JCheckBox();
                         Checkbox.setOpaque(false);
 
-                        Result.add(Name    , BorderLayout.WEST);
-                        Result.add(Checkbox, BorderLayout.EAST);
+                        gbc.weightx = 0.75;
+                        gbc.gridx = 0;
+                        Result.add(Name    , gbc);
+                        gbc.weightx = 0.25;
+                        gbc.gridx = 1;
+                        Result.add(Checkbox, gbc);
 
                         CF.Text     = Name;
                         CF.Checkbox = Checkbox;
@@ -338,15 +388,19 @@ public class DevWindow {
                     }
                     case Range:
                     {
-                        JLabel Name = new JLabel(F.getName());
+                        JLabel Name = new JLabel(FName);
                         Name.setOpaque(false);
                         JSpinner NumberRange = new JSpinner(new SpinnerNumberModel(0, -1000, 1000, 0.1));
                         NumberRange.setOpaque(false);
 
-                        Result.add(Name       , BorderLayout.WEST);
-                        Result.add(NumberRange, BorderLayout.EAST);
+                        gbc.weightx = 0.75;
+                        gbc.gridx = 0;
+                        Result.add(Name       , gbc);
+                        gbc.weightx = 0.25;
+                        gbc.gridx = 1;
+                        Result.add(NumberRange, gbc);
 
-                        CF.Text        = Name;
+                        CF.Text        = Name       ;
                         CF.NumberRange = NumberRange;
 
                         CF.CL = (ChangeEvent e) -> {
@@ -386,17 +440,149 @@ public class DevWindow {
             }
         }
 
+        for(CurseField CF : CurseFields){
+            if(!CF.HasDesc){
+                CF.AddDesc("Описание отсутствует!");
+            }
+        }
+
+        int Max = Math.max(Column1.getComponentCount(), Math.max(Column2.getComponentCount(), Column3.getComponentCount()));
+        if(Column1.getComponentCount() != Max){ Column1.add(CreateEvalPanel((Column1.getComponentCount()) % 2 == 0 )); }
+        if(Column2.getComponentCount() != Max){ Column2.add(CreateEvalPanel((Column2.getComponentCount()) % 2 == 0 )); }
+        if(Column3.getComponentCount() != Max){ Column3.add(CreateEvalPanel((Column3.getComponentCount()) % 2 == 0 )); }
+
         Content.add(Column1);
         Content.add(Column2);
         Content.add(Column3);
         return Content;
     }
 
+    private static class EventMethod{
+        private final Method Method;
+        protected boolean HasDesc = false;
+
+        private EventMethod(Method Method){ this.Method = Method; }
+
+        protected JLabel Text = null;
+        protected JButton Button = null;
+
+        protected void AddDesc(String Desc){
+            HasDesc = true;
+            this.Text.setToolTipText(Desc);
+            this.Button.setToolTipText(Desc);
+        }
+
+    }
     private static JPanel T_Events(){
-        JPanel Content = new JPanel(new GridLayout(1, 1));
+        JPanel Content = new JPanel(new GridLayout(1, 2));
+        JPanel Column1 = new JPanel(new GridLayout(0, 1));
+        JPanel Column2 = new JPanel(new GridLayout(0, 1));
 
-        //Class<?>
+        Column2.setBackground(Color.LIGHT_GRAY);
 
+        Map<String,String> Descs = new HashMap<>();
+
+        Field[] Fields = Events.class.getDeclaredFields();
+        for(Field F : Fields) {
+            if (Modifier.isStatic(F.getModifiers())) {
+                F.setAccessible(true);
+
+                boolean ThatString = F.getType().equals(String.class);
+
+                if (ThatString) {
+                    String Desc = "err?";
+
+                    try {
+                        Desc = (String) F.get(null);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                    Descs.put(F.getName().replace("_Desc", ""), Desc);
+                }
+            }
+        }
+
+        int WhatColumn = 0;
+        boolean Eval = false;
+        Method[] Methods = Events.class.getDeclaredMethods();
+        for(Method M : Methods){
+            if(Modifier.isStatic(M.getModifiers())){
+                M.setAccessible(true);
+
+                EventMethod EM = new EventMethod(M);
+
+                switch (WhatColumn){
+                    case 0: Eval = Column1.getComponentCount() % 2 == 0; break;
+                    case 1: Eval = Column2.getComponentCount() % 2 == 0; break;
+                }
+
+                JPanel Result = CreateEvalPanel(Eval);
+
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.BOTH;
+                gbc.weighty = 1;
+                gbc.gridy = 0;
+
+                JLabel Name = new JLabel(M.getName());
+                Name.setOpaque(false);
+                JButton Button = new JButton("INVOKE");
+                Button.setOpaque(false);
+
+                gbc.weightx = 0.75;
+                gbc.gridx = 0;
+                Result.add(Name  , gbc);
+                gbc.weightx = 0.25;
+                gbc.gridx = 1;
+                Result.add(Button, gbc);
+
+                EM.Text   = Name  ;
+                EM.Button = Button;
+
+                Button.addActionListener((e) -> {
+                    try{
+                        M.invoke(null);
+                    } catch (InvocationTargetException | IllegalAccessException ex) {
+                        ex.printStackTrace();
+                    }
+                });
+
+                EventMethods.add(EM);
+
+                switch (WhatColumn){
+                    case 0: Column1.add(Result); break;
+                    case 1: Column2.add(Result); break;
+                }
+
+                WhatColumn++;
+                if(WhatColumn==2){ WhatColumn = 0; }
+            }
+        }
+
+        for(Map.Entry<String,String> e : Descs.entrySet()){
+            String MethodName = e.getKey();
+            String Desc       = e.getValue();
+
+            for(EventMethod EM : EventMethods){
+                if(EM.Method.getName().equals(MethodName)){
+                    EM.AddDesc(Desc);
+                    break;
+                }
+            }
+        }
+
+        for(EventMethod EM : EventMethods){
+            if(!EM.HasDesc){
+                EM.AddDesc("Описание отсутствует!");
+            }
+        }
+
+        int Max = Math.max(Column1.getComponentCount(), Column2.getComponentCount());
+        if(Column1.getComponentCount() != Max){ Column1.add(CreateEvalPanel((Column1.getComponentCount()) % 2 == 0 )); }
+        if(Column2.getComponentCount() != Max){ Column2.add(CreateEvalPanel((Column2.getComponentCount()) % 2 == 0 )); }
+
+        Content.add(Column1);
+        Content.add(Column2);
         return Content;
     }
 
@@ -453,8 +639,8 @@ public class DevWindow {
         JLabel NameText = new JLabel("[" + GTH_V.Code + "] " + GTH_V.Name);
         NameText.setPreferredSize(new Dimension(WindowSize.x / 6, NameText.getPreferredSize().height));
         NameText.setToolTipText(GTH_V.Name + " — " + GTH_V.Desc);
-        Name.add(NameText, BorderLayout.WEST);
-        Result.add(Name, BorderLayout.WEST);
+        Name  .add(NameText);
+        Result.add(Name    ,BorderLayout.WEST);
 
         JProgressBar Bar = new JProgressBar(-GTH_Value.MAX, GTH_Value.MAX);
         Bar.setValue(0);

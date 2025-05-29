@@ -3,10 +3,11 @@ package net.minecraft;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.netty.util.ResourceLeakDetector;
 import io.netty.util.ResourceLeakDetector.Level;
-import java.time.Duration;
-import javax.annotation.Nullable;
 import net.minecraft.commands.BrigadierExceptions;
 import net.minecraft.world.level.ChunkPos;
+
+import javax.annotation.Nullable;
+import java.time.Duration;
 
 public class SharedConstants {
     @Deprecated

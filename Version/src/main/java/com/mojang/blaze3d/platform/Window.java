@@ -1,17 +1,10 @@
 package com.mojang.blaze3d.platform;
 
+import com.gatetohell.Initializing;
+import com.gatetohell.MinecraftInfo;
 import com.mojang.blaze3d.TracyFrameCapture;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.logging.LogUtils;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import javax.annotation.Nullable;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -21,17 +14,23 @@ import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.Callbacks;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWImage;
-import org.lwjgl.glfw.GLFWWindowCloseCallback;
+import org.lwjgl.glfw.*;
 import org.lwjgl.glfw.GLFWImage.Buffer;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.function.BiConsumer;
 
 @OnlyIn(Dist.CLIENT)
 public final class Window implements AutoCloseable {
@@ -82,14 +81,21 @@ public final class Window implements AutoCloseable {
         Monitor monitor = p_85373_.getMonitor(GLFW.glfwGetPrimaryMonitor());
         this.windowedWidth = this.width = p_85374_.width > 0 ? p_85374_.width : 1;
         this.windowedHeight = this.height = p_85374_.height > 0 ? p_85374_.height : 1;
+
         GLFW.glfwDefaultWindowHints();
-        GLFW.glfwWindowHint(139265, 196609);
-        GLFW.glfwWindowHint(139275, 221185);
-        GLFW.glfwWindowHint(139266, 3);
-        GLFW.glfwWindowHint(139267, 2);
-        GLFW.glfwWindowHint(139272, 204801);
-        GLFW.glfwWindowHint(139270, 1);
+        GLFW.glfwWindowHint(GLFW.GLFW_CLIENT_API, GLFW.GLFW_OPENGL_API);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_CREATION_API, GLFW.GLFW_NATIVE_CONTEXT_API);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3);
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 2);
+        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_PROFILE, GLFW.GLFW_OPENGL_CORE_PROFILE);
+        GLFW.glfwWindowHint(GLFW.GLFW_OPENGL_FORWARD_COMPAT, 1);
+
+        if(Initializing.TransparentBuffer) {
+            GLFW.glfwWindowHint(GLFW.GLFW_TRANSPARENT_FRAMEBUFFER, GLFW.GLFW_TRUE);
+        }
+
         this.window = GLFW.glfwCreateWindow(this.width, this.height, p_85376_, this.fullscreen && monitor != null ? monitor.getMonitor() : 0L, 0L);
+        MinecraftInfo.WindowID = this.window;
         if (monitor != null) {
             VideoMode videomode = monitor.getPreferredVidMode(this.fullscreen ? this.preferredFullscreenVideoMode : Optional.empty());
             this.windowedX = this.x = monitor.getX() + videomode.getWidth() / 2 - this.width / 2;
@@ -109,11 +115,11 @@ public final class Window implements AutoCloseable {
         this.setMode();
         this.refreshFramebufferSize();
         GLFW.glfwSetFramebufferSizeCallback(this.window, this::onFramebufferResize);
-        GLFW.glfwSetWindowPosCallback(this.window, this::onMove);
-        GLFW.glfwSetWindowSizeCallback(this.window, this::onResize);
-        GLFW.glfwSetWindowFocusCallback(this.window, this::onFocus);
-        GLFW.glfwSetCursorEnterCallback(this.window, this::onEnter);
-        GLFW.glfwSetWindowIconifyCallback(this.window, this::onIconify);
+        GLFW.glfwSetWindowPosCallback      (this.window, this::onMove);
+        GLFW.glfwSetWindowSizeCallback     (this.window, this::onResize);
+        GLFW.glfwSetWindowFocusCallback    (this.window, this::onFocus);
+        GLFW.glfwSetCursorEnterCallback    (this.window, this::onEnter);
+        GLFW.glfwSetWindowIconifyCallback  (this.window, this::onIconify);
     }
 
     public static String getPlatform() {

@@ -33,7 +33,7 @@ public enum GTH_Value {
         this.Code = Code; this.Name = Name; this.Color = Color; this.SetValueF = SetValueF; this.GetValueF = GetValueF; this.Desc = Desc;
     }
 
-    public void SetValue(int Value){ this.SetValueF.accept(Value); if(GateToHell.Dev){ DevWindow.ValueProgressBars.get(this).SetValue(Value); } }
+    public void SetValue(int Value){ Value = Math.clamp(Value, -1000, 1000); this.SetValueF.accept(Value); if(GateToHell.Dev){ DevWindow.ValueProgressBars.get(this).SetValue(Value); } }
     public int  GetValue(         ){ return this.GetValueF.get() ; }
     public void AddValue(int Value){ SetValue(GetValue() + Value); }
     public void SubValue(int Value){ SetValue(GetValue() - Value); }

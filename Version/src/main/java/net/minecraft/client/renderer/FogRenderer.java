@@ -1,6 +1,7 @@
 package net.minecraft.client.renderer;
 
 import com.gatetohell.Curses;
+import com.gatetohell.Initializing;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.shaders.FogShape;
 import net.minecraft.Util;
@@ -86,7 +87,7 @@ public class FogRenderer {
             f2 = 0.785F;
             biomeChangedTime = -1L;
         } else {
-            if(Curses.BlackSky){ return new Vector4f(); }
+            if(Curses.BlackSky || Initializing.TransparentBuffer){ return new Vector4f(); }
 
             float f7 = 0.25F + 0.75F * (float)p_361512_ / 32.0F;
             f7 = 1.0F - (float)Math.pow((double)f7, 0.25);

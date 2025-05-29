@@ -5,7 +5,7 @@ public class Curses {
     private static final double  D_Double  = 1;
 
     protected static final String DevTest_Desc = "Тестовая штука";
-    public static boolean DevTest = D_Boolean;
+    public static boolean DevTest = false;
 
     protected static final String DevTestNumber_Desc = "Тестовая штука (число)";
     public static double DevTestNumber = D_Double;
@@ -42,4 +42,10 @@ public class Curses {
 
     protected static final String MoonSize_Desc = "Меняет размер луны";
     public static double MoonSize = D_Double;
+
+    protected static final String ClearPanorama_Desc = "Убирает панораму";
+    public static boolean ClearPanorama = D_Boolean;
+
+    protected static final String NoButtons_Desc = "Убирает кнопки";
+    public static boolean NoButtons = D_Boolean;
 }

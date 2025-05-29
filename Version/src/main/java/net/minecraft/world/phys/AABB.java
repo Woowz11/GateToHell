@@ -1,13 +1,15 @@
 package net.minecraft.world.phys;
 
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.Nullable;
+import com.gatetohell.Initializing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.joml.Vector3f;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
 
 public class AABB {
     private static final double EPSILON = 1.0E-7;
@@ -232,10 +234,10 @@ public class AABB {
     public AABB move(double p_82387_, double p_82388_, double p_82389_) {
         return new AABB(
             this.minX + p_82387_,
-            this.minY + p_82388_,
+            this.minY + p_82388_ * (Initializing.InvertMoveYInAABB ? -1 : 1),
             this.minZ + p_82389_,
             this.maxX + p_82387_,
-            this.maxY + p_82388_,
+            this.maxY + p_82388_ * (Initializing.InvertMoveYInAABB ? -1 : 1),
             this.maxZ + p_82389_
         );
     }
@@ -243,10 +245,10 @@ public class AABB {
     public AABB move(BlockPos p_82339_) {
         return new AABB(
             this.minX + (double)p_82339_.getX(),
-            this.minY + (double)p_82339_.getY(),
+            this.minY + (double)p_82339_.getY() * (Initializing.InvertMoveYInAABB ? -1 : 1),
             this.minZ + (double)p_82339_.getZ(),
             this.maxX + (double)p_82339_.getX(),
-            this.maxY + (double)p_82339_.getY(),
+            this.maxY + (double)p_82339_.getY() * (Initializing.InvertMoveYInAABB ? -1 : 1),
             this.maxZ + (double)p_82339_.getZ()
         );
     }

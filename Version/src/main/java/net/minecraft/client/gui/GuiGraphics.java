@@ -5,15 +5,6 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -50,6 +41,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Vector2ic;
+
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class GuiGraphics {
@@ -148,37 +145,37 @@ public class GuiGraphics {
         }
     }
 
-    public void fill(int p_282988_, int p_282861_, int p_281278_, int p_281710_, int p_281470_) {
-        this.fill(p_282988_, p_282861_, p_281278_, p_281710_, 0, p_281470_);
+    public void fill(int x, int y, int w, int h, int color) {
+        this.fill(x, y, w, h, 0, color);
     }
 
-    public void fill(int p_281437_, int p_283660_, int p_282606_, int p_283413_, int p_283428_, int p_283253_) {
-        this.fill(RenderType.gui(), p_281437_, p_283660_, p_282606_, p_283413_, p_283428_, p_283253_);
+    public void fill(int x, int y, int w, int h, int z, int color) {
+        this.fill(RenderType.gui(), x, y, w, h, z, color);
     }
 
-    public void fill(RenderType p_286602_, int p_286738_, int p_286614_, int p_286741_, int p_286610_, int p_286560_) {
-        this.fill(p_286602_, p_286738_, p_286614_, p_286741_, p_286610_, 0, p_286560_);
+    public void fill(RenderType rType, int x, int y, int w, int h, int color) {
+        this.fill(rType, x, y, w, h, 0, color);
     }
 
-    public void fill(RenderType p_286711_, int p_286234_, int p_286444_, int p_286244_, int p_286411_, int p_286671_, int p_286599_) {
+    public void fill(RenderType rType, int x, int y, int w, int h, int z, int color) {
         Matrix4f matrix4f = this.pose.last().pose();
-        if (p_286234_ < p_286244_) {
-            int i = p_286234_;
-            p_286234_ = p_286244_;
-            p_286244_ = i;
+        if (x < w) {
+            int i = x;
+            x = w;
+            w = i;
         }
 
-        if (p_286444_ < p_286411_) {
-            int j = p_286444_;
-            p_286444_ = p_286411_;
-            p_286411_ = j;
+        if (y < h) {
+            int j = y;
+            y = h;
+            h = j;
         }
 
-        VertexConsumer vertexconsumer = this.bufferSource.getBuffer(p_286711_);
-        vertexconsumer.addVertex(matrix4f, (float)p_286234_, (float)p_286444_, (float)p_286671_).setColor(p_286599_);
-        vertexconsumer.addVertex(matrix4f, (float)p_286234_, (float)p_286411_, (float)p_286671_).setColor(p_286599_);
-        vertexconsumer.addVertex(matrix4f, (float)p_286244_, (float)p_286411_, (float)p_286671_).setColor(p_286599_);
-        vertexconsumer.addVertex(matrix4f, (float)p_286244_, (float)p_286444_, (float)p_286671_).setColor(p_286599_);
+        VertexConsumer vertexconsumer = this.bufferSource.getBuffer(rType);
+        vertexconsumer.addVertex(matrix4f, (float)x, (float)y, (float)z).setColor(color);
+        vertexconsumer.addVertex(matrix4f, (float)x, (float)h, (float)z).setColor(color);
+        vertexconsumer.addVertex(matrix4f, (float)w, (float)h, (float)z).setColor(color);
+        vertexconsumer.addVertex(matrix4f, (float)w, (float)y, (float)z).setColor(color);
     }
 
     public void fillGradient(int p_283290_, int p_283278_, int p_282670_, int p_281698_, int p_283374_, int p_283076_) {
@@ -757,12 +754,12 @@ public class GuiGraphics {
     public void blit(
         Function<ResourceLocation, RenderType> p_363581_,
         ResourceLocation p_283573_,
-        int p_283574_,
-        int p_283670_,
+        int x,
+        int y,
         float p_283029_,
         float p_283061_,
-        int p_283545_,
-        int p_282845_,
+        int w,
+        int h,
         int p_282558_,
         int p_282832_,
         int p_281851_,
@@ -772,10 +769,10 @@ public class GuiGraphics {
         this.innerBlit(
             p_363581_,
             p_283573_,
-            p_283574_,
-            p_283574_ + p_283545_,
-            p_283670_,
-            p_283670_ + p_282845_,
+            x,
+            x + w,
+            y,
+            y + h,
             (p_283029_ + 0.0F) / (float)p_281851_,
             (p_283029_ + (float)p_282558_) / (float)p_281851_,
             (p_283061_ + 0.0F) / (float)p_366628_,
@@ -787,10 +784,10 @@ public class GuiGraphics {
     private void innerBlit(
         Function<ResourceLocation, RenderType> p_368273_,
         ResourceLocation p_283254_,
-        int p_283092_,
-        int p_281930_,
-        int p_282113_,
-        int p_281388_,
+        int x,
+        int w,
+        int y,
+        int h,
         float p_281327_,
         float p_281676_,
         float p_283166_,
@@ -800,10 +797,10 @@ public class GuiGraphics {
         RenderType rendertype = p_368273_.apply(p_283254_);
         Matrix4f matrix4f = this.pose.last().pose();
         VertexConsumer vertexconsumer = this.bufferSource.getBuffer(rendertype);
-        vertexconsumer.addVertex(matrix4f, (float)p_283092_, (float)p_282113_, 0.0F).setUv(p_281327_, p_283166_).setColor(p_283583_);
-        vertexconsumer.addVertex(matrix4f, (float)p_283092_, (float)p_281388_, 0.0F).setUv(p_281327_, p_282630_).setColor(p_283583_);
-        vertexconsumer.addVertex(matrix4f, (float)p_281930_, (float)p_281388_, 0.0F).setUv(p_281676_, p_282630_).setColor(p_283583_);
-        vertexconsumer.addVertex(matrix4f, (float)p_281930_, (float)p_282113_, 0.0F).setUv(p_281676_, p_283166_).setColor(p_283583_);
+        vertexconsumer.addVertex(matrix4f, (float)x, (float)y, 0.0F).setUv(p_281327_, p_283166_).setColor(p_283583_);
+        vertexconsumer.addVertex(matrix4f, (float)x, (float)h, 0.0F).setUv(p_281327_, p_282630_).setColor(p_283583_);
+        vertexconsumer.addVertex(matrix4f, (float)w, (float)h, 0.0F).setUv(p_281676_, p_282630_).setColor(p_283583_);
+        vertexconsumer.addVertex(matrix4f, (float)w, (float)y, 0.0F).setUv(p_281676_, p_283166_).setColor(p_283583_);
     }
 
     public void renderItem(ItemStack p_281978_, int p_282647_, int p_281944_) {

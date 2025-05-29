@@ -1,6 +1,8 @@
 package net.minecraft.client.renderer;
 
 import com.gatetohell.Curses;
+import com.gatetohell.CursesEvents;
+import com.gatetohell.Initializing;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
@@ -1055,7 +1057,7 @@ public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseab
                         float r = ARGB.redFloat(k);
                         float g = ARGB.greenFloat(k);
                         float b = ARGB.blueFloat(k);
-                        if(!Curses.BlackSky){ this.skyRenderer.renderSkyDisc(r, g, b); }
+                        if(!Curses.BlackSky && !Initializing.TransparentBuffer){ this.skyRenderer.renderSkyDisc(r, g, b); }
                         MultiBufferSource.BufferSource multibuffersource$buffersource = this.renderBuffers.bufferSource();
                         if (dimensionspecialeffects.isSunriseOrSunset(f1)) {
                             this.skyRenderer.renderSunriseAndSunset(posestack, multibuffersource$buffersource, f, i);

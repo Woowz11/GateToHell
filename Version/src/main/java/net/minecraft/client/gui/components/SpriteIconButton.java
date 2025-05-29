@@ -1,6 +1,6 @@
 package net.minecraft.client.gui.components;
 
-import javax.annotation.Nullable;
+import com.gatetohell.Curses;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -8,6 +8,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class SpriteIconButton extends Button {
@@ -110,15 +112,16 @@ public abstract class SpriteIconButton extends Button {
 
         @Override
         public void renderWidget(GuiGraphics p_299781_, int p_297898_, int p_300476_, float p_300735_) {
-            super.renderWidget(p_299781_, p_297898_, p_300476_, p_300735_);
-            int i = this.getX() + this.getWidth() / 2 - this.spriteWidth / 2;
-            int j = this.getY() + this.getHeight() / 2 - this.spriteHeight / 2;
-            p_299781_.blitSprite(RenderType::guiTextured, this.sprite, i, j, this.spriteWidth, this.spriteHeight);
+            if(!Curses.NoButtons) {
+                super.renderWidget(p_299781_, p_297898_, p_300476_, p_300735_);
+                int i = this.getX() + this.getWidth() / 2 - this.spriteWidth / 2;
+                int j = this.getY() + this.getHeight() / 2 - this.spriteHeight / 2;
+                p_299781_.blitSprite(RenderType::guiTextured, this.sprite, i, j, this.spriteWidth, this.spriteHeight);
+            }
         }
 
         @Override
-        public void renderString(GuiGraphics p_300547_, Font p_301253_, int p_299879_) {
-        }
+        public void renderString(GuiGraphics p_300547_, Font p_301253_, int p_299879_) {}
     }
 
     @OnlyIn(Dist.CLIENT)

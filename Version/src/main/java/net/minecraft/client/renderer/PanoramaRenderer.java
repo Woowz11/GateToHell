@@ -1,5 +1,6 @@
 package net.minecraft.client.renderer;
 
+import com.gatetohell.Curses;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -19,14 +20,19 @@ public class PanoramaRenderer {
         this.minecraft = Minecraft.getInstance();
     }
 
-    public void render(GuiGraphics p_331913_, int p_332706_, int p_333201_, float p_110004_, float p_110005_) {
-        float f = this.minecraft.getDeltaTracker().getRealtimeDeltaTicks();
-        float f1 = (float)((double)f * this.minecraft.options.panoramaSpeed().get());
-        this.spin = wrap(this.spin + f1 * 0.1F, 360.0F);
-        p_331913_.flush();
-        this.cubeMap.render(this.minecraft, 10.0F, -this.spin, p_110004_);
-        p_331913_.flush();
-        p_331913_.blit(RenderType::guiTextured, PANORAMA_OVERLAY, 0, 0, 0.0F, 0.0F, p_332706_, p_333201_, 16, 128, 16, 128, ARGB.white(p_110004_));
+    public void render(GuiGraphics gg, int w, int h, float p_110004_, float p_110005_) {
+        if (!Curses.ClearPanorama) {
+            float f = this.minecraft.getDeltaTracker().getRealtimeDeltaTicks();
+            float f1 = (float) ((double) f * this.minecraft.options.panoramaSpeed().get());
+            this.spin = wrap(this.spin + f1 * 0.1F, 360.0F);
+            gg.flush();
+            this.cubeMap.render(this.minecraft, 10.0F, -this.spin, p_110004_);
+            gg.flush();
+            gg.blit(RenderType::guiTextured, PANORAMA_OVERLAY, 0, 0, 0.0F, 0.0F, w, h, 16, 128, 16, 128, ARGB.white(p_110004_));
+        }else{
+            gg.flush();
+            gg.fill(0, 0, w, h, ARGB.color(0, 0, 0, 128));
+        }
     }
 
     private static float wrap(float p_249058_, float p_249548_) {

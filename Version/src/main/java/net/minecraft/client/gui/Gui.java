@@ -1,6 +1,8 @@
 package net.minecraft.client.gui;
 
 import com.gatetohell.Curses;
+import com.gatetohell.CursesEvents;
+import com.gatetohell.Initializing;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.mojang.blaze3d.platform.Window;
@@ -202,7 +204,7 @@ public class Gui {
     }
 
     private void renderCameraOverlays(GuiGraphics p_333627_, DeltaTracker p_344236_) {
-        if (Minecraft.useFancyGraphics() && !Curses.BrokeBufferClear && !Curses.BrokeSkyBufferClear) {
+        if (Minecraft.useFancyGraphics() && !Curses.BrokeBufferClear && !Curses.BrokeSkyBufferClear && !Initializing.TransparentBuffer) {
             this.renderVignette(p_333627_, this.minecraft.getCameraEntity());
         }
 

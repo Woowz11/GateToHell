@@ -11,9 +11,6 @@ buildscript {
     }
 }
 
-import net.minecraftforge.gradle.common.util.Utils
-import net.minecraftforge.gradle.common.util.VersionJson
-
 apply plugin: 'eclipse'
 apply plugin: 'net.minecraftforge.gradle.patcher'
 apply plugin: "org.jetbrains.gradle.plugin.idea-ext"
@@ -89,6 +86,7 @@ tasks.register('runclient', JavaExec) {
     args '--gameDir', runFolder
     args '--version', minecraft_version
     args '--accessToken', '0'
+    args '-username', 'Woowz11'
     main 'net.minecraft.client.main.Main'
 }
 
