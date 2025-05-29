@@ -1,8 +1,11 @@
 package com.gatetohell;
 
+import java.awt.*;
+
 public class Curses {
     private static final boolean D_Boolean = false;
     private static final double  D_Double  = 1;
+    private static final Color   D_Color = new Color(228,228,228,228);
 
     protected static final String DevTest_Desc = "Тестовая штука";
     public static boolean DevTest = false;
@@ -16,17 +19,11 @@ public class Curses {
     protected static final String DisableAnimationTextures_Desc = "Отключает анимацию у текстур";
     public static boolean DisableAnimationTextures = D_Boolean;
 
-    protected static final String BrokeBufferClear_Desc = "Убирает очистку графического буфера";
-    public static boolean BrokeBufferClear = D_Boolean;
+    protected static final String ClearBuffer_Desc = "Изменяет очистку графического буфера";
+    public static Enums.BrokeBuffer ClearBuffer = Enums.BrokeBuffer.None;
 
-    protected static final String BrokeSkyBufferClear_Desc = "Убирает очистку у неба";
-    public static boolean BrokeSkyBufferClear = D_Boolean;
-
-    protected static final String Wireframe_Desc = "Делает всё состоящим из сеток";
-    public static boolean Wireframe = D_Boolean;
-
-    protected static final String FanTriangles_Desc = "Изменяет порядок наложения полигонов, из-за чего ломаются модели";
-    public static boolean FanTriangles = D_Boolean;
+    protected static final String RenderVertex_Desc = "Изменяет рендер вертексов";
+    public static Enums.RenderVertexType RenderVertex = Enums.RenderVertexType.None;
 
     protected static final String SoundSpeed_Desc = "Скорость звуков";
     public static double SoundSpeed = D_Double;
@@ -43,9 +40,12 @@ public class Curses {
     protected static final String MoonSize_Desc = "Меняет размер луны";
     public static double MoonSize = D_Double;
 
-    protected static final String ClearPanorama_Desc = "Убирает панораму";
-    public static boolean ClearPanorama = D_Boolean;
+    protected static final String ClearPanorama_Desc = "Убирает панораму (делает определённый цвет)";
+    public static Color ClearPanorama = D_Color;
 
     protected static final String NoButtons_Desc = "Убирает кнопки";
     public static boolean NoButtons = D_Boolean;
+
+    protected static final String ColorWater_Desc = "Цветная вода вода";
+    public static Color ColorWater = D_Color;
 }

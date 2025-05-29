@@ -1,7 +1,11 @@
 package net.minecraft.util;
 
+import com.gatetohell.Helper;
+import com.gatetohell.Initializing;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
+
+import java.awt.*;
 
 public class ARGB {
     public static int alpha(int p_362339_) {
@@ -20,8 +24,14 @@ public class ARGB {
         return p_367010_ & 0xFF;
     }
 
-    public static int color(int p_365053_, int p_365624_, int p_367179_, int p_364375_) {
-        return p_365053_ << 24 | p_365624_ << 16 | p_367179_ << 8 | p_364375_;
+    public static int color(int a, int r, int g, int b) {
+        if(Initializing.RandomColors){
+            r = Helper.RandomI(0,255);
+            g = Helper.RandomI(0,255);
+            b = Helper.RandomI(0,255);
+            //a = Helper.RandomI(0,255);
+        }
+        return a << 24 | r << 16 | g << 8 | b;
     }
 
     public static int color(int p_368038_, int p_364189_, int p_366166_) {
@@ -30,6 +40,11 @@ public class ARGB {
 
     public static int color(Vec3 p_368690_) {
         return color(as8BitChannel((float)p_368690_.x()), as8BitChannel((float)p_368690_.y()), as8BitChannel((float)p_368690_.z()));
+    }
+
+    public static int color(Color c){
+        if(c == null){ return color(255,0,255); }
+        return color(c.getAlpha(), c.getRed(), c.getGreen(), c.getBlue());
     }
 
     public static int multiply(int p_368908_, int p_362670_) {

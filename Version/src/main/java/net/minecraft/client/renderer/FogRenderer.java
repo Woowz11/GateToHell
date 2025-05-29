@@ -1,6 +1,7 @@
 package net.minecraft.client.renderer;
 
 import com.gatetohell.Curses;
+import com.gatetohell.Helper;
 import com.gatetohell.Initializing;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.shaders.FogShape;
@@ -51,7 +52,7 @@ public class FogRenderer {
         float f2;
         if (fogtype == FogType.WATER) {
             long i = Util.getMillis();
-            int k = p_361507_.getBiome(BlockPos.containing(p_362477_.getPosition())).value().getWaterFogColor();
+            int k = (Helper.ThatChangedColor(Curses.ColorWater) ? ARGB.color(Curses.ColorWater) : p_361507_.getBiome(BlockPos.containing(p_362477_.getPosition())).value().getWaterFogColor());
             if (biomeChangedTime < 0L) {
                 targetBiomeFog = k;
                 previousBiomeFog = k;

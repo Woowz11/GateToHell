@@ -1,5 +1,7 @@
 package net.minecraft.client.renderer.block;
 
+import com.gatetohell.Curses;
+import com.gatetohell.Helper;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
@@ -9,6 +11,7 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
@@ -71,10 +74,10 @@ public class LiquidBlockRenderer {
     public void tesselate(BlockAndTintGetter p_234370_, BlockPos p_234371_, VertexConsumer p_234372_, BlockState p_234373_, FluidState p_234374_) {
         boolean flag = p_234374_.is(FluidTags.LAVA);
         TextureAtlasSprite[] atextureatlassprite = flag ? this.lavaIcons : this.waterIcons;
-        int i = flag ? 16777215 : BiomeColors.getAverageWaterColor(p_234370_, p_234371_);
-        float f = (float)(i >> 16 & 0xFF) / 255.0F;
-        float f1 = (float)(i >> 8 & 0xFF) / 255.0F;
-        float f2 = (float)(i & 0xFF) / 255.0F;
+        int color = flag ? 16777215 : Helper.ThatChangedColor(Curses.ColorWater) ? ARGB.color(Curses.ColorWater) : BiomeColors.getAverageWaterColor(p_234370_, p_234371_);
+        float r = (float)(color >> 16 & 0xFF) / 255.0F;
+        float g = (float)(color >> 8 & 0xFF) / 255.0F;
+        float b = (float)(color & 0xFF) / 255.0F;
         BlockState blockstate = p_234370_.getBlockState(p_234371_.relative(Direction.DOWN));
         FluidState fluidstate = blockstate.getFluidState();
         BlockState blockstate1 = p_234370_.getBlockState(p_234371_.relative(Direction.UP));
@@ -177,9 +180,9 @@ public class LiquidBlockRenderer {
                 f23 = Mth.lerp(f55, f23, f54);
                 f24 = Mth.lerp(f55, f24, f54);
                 int l = this.getLightColor(p_234370_, p_234371_);
-                float f57 = f4 * f;
-                float f29 = f4 * f1;
-                float f30 = f4 * f2;
+                float f57 = f4 * r;
+                float f29 = f4 * g;
+                float f30 = f4 * b;
                 this.vertex(p_234372_, f36 + 0.0F, f37 + f8, f38 + 0.0F, f57, f29, f30, f17, f21, l);
                 this.vertex(p_234372_, f36 + 0.0F, f37 + f10, f38 + 1.0F, f57, f29, f30, f18, f22, l);
                 this.vertex(p_234372_, f36 + 1.0F, f37 + f9, f38 + 1.0F, f57, f29, f30, f19, f23, l);
@@ -198,9 +201,9 @@ public class LiquidBlockRenderer {
                 float f42 = atextureatlassprite[0].getV0();
                 float f43 = atextureatlassprite[0].getV1();
                 int k = this.getLightColor(p_234370_, p_234371_.below());
-                float f46 = f3 * f;
-                float f48 = f3 * f1;
-                float f50 = f3 * f2;
+                float f46 = f3 * r;
+                float f48 = f3 * g;
+                float f50 = f3 * b;
                 this.vertex(p_234372_, f36, f37 + f16, f38 + 1.0F, f46, f48, f50, f40, f43, k);
                 this.vertex(p_234372_, f36, f37 + f16, f38, f46, f48, f50, f40, f42, k);
                 this.vertex(p_234372_, f36 + 1.0F, f37 + f16, f38, f46, f48, f50, f41, f42, k);
@@ -271,9 +274,9 @@ public class LiquidBlockRenderer {
                     float f60 = textureatlassprite2.getV((1.0F - f45) * 0.5F);
                     float f31 = textureatlassprite2.getV(0.5F);
                     float f32 = direction.getAxis() == Direction.Axis.Z ? f5 : f6;
-                    float f33 = f4 * f32 * f;
-                    float f34 = f4 * f32 * f1;
-                    float f35 = f4 * f32 * f2;
+                    float f33 = f4 * f32 * r;
+                    float f34 = f4 * f32 * g;
+                    float f35 = f4 * f32 * b;
                     this.vertex(p_234372_, f47, f37 + f44, f49, f33, f34, f35, f56, f59, j);
                     this.vertex(p_234372_, f51, f37 + f45, f52, f33, f34, f35, f58, f60, j);
                     this.vertex(p_234372_, f51, f37 + f16, f52, f33, f34, f35, f58, f31, j);

@@ -1,6 +1,7 @@
 package net.minecraft.client.renderer;
 
 import com.gatetohell.Curses;
+import com.gatetohell.Helper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +22,10 @@ public class PanoramaRenderer {
     }
 
     public void render(GuiGraphics gg, int w, int h, float p_110004_, float p_110005_) {
-        if (!Curses.ClearPanorama) {
+        if (Helper.ThatChangedColor(Curses.ClearPanorama)) {
+            gg.flush();
+            gg.fill(0, 0, w, h, ARGB.color(Curses.ClearPanorama));
+        }else{
             float f = this.minecraft.getDeltaTracker().getRealtimeDeltaTicks();
             float f1 = (float) ((double) f * this.minecraft.options.panoramaSpeed().get());
             this.spin = wrap(this.spin + f1 * 0.1F, 360.0F);
@@ -29,9 +33,6 @@ public class PanoramaRenderer {
             this.cubeMap.render(this.minecraft, 10.0F, -this.spin, p_110004_);
             gg.flush();
             gg.blit(RenderType::guiTextured, PANORAMA_OVERLAY, 0, 0, 0.0F, 0.0F, w, h, 16, 128, 16, 128, ARGB.white(p_110004_));
-        }else{
-            gg.flush();
-            gg.fill(0, 0, w, h, ARGB.color(0, 0, 0, 128));
         }
     }
 

@@ -1,7 +1,6 @@
 package net.minecraft.world.level.block;
 
-import java.util.function.Function;
-import java.util.function.ToIntFunction;
+import com.gatetohell.Initializing;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -32,15 +31,13 @@ import net.minecraft.world.level.block.piston.PistonBaseBlock;
 import net.minecraft.world.level.block.piston.PistonHeadBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BedPart;
-import net.minecraft.world.level.block.state.properties.BlockSetType;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.block.state.properties.SculkSensorPhase;
-import net.minecraft.world.level.block.state.properties.WoodType;
+import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
 
 public class Blocks {
     private static final BlockBehaviour.StatePredicate NOT_CLOSED_SHULKER = (p_309267_, p_309268_, p_309269_) -> p_309268_.getBlockEntity(p_309269_) instanceof ShulkerBoxBlockEntity shulkerboxblockentity
@@ -6566,8 +6563,11 @@ public class Blocks {
         return blockbehaviour$properties1;
     }
 
-    private static Block register(ResourceKey<Block> p_309992_, Function<BlockBehaviour.Properties, Block> p_365267_, BlockBehaviour.Properties p_360839_) {
-        Block block = p_365267_.apply(p_360839_.setId(p_309992_));
+    private static Block register(ResourceKey<Block> p_309992_, Function<BlockBehaviour.Properties, Block> p_365267_, BlockBehaviour.Properties bbehaviour) {
+        if(Initializing.ChanceToNoCollisionBlock && Math.random()>0.25){
+            bbehaviour.noCollission();
+        }
+        Block block = p_365267_.apply(bbehaviour.setId(p_309992_));
         return Registry.register(BuiltInRegistries.BLOCK, p_309992_, block);
     }
 

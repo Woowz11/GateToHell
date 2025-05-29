@@ -7,10 +7,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 import it.unimi.dsi.fastutil.objects.Object2ByteLinkedOpenHashMap;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,13 +34,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -59,6 +49,11 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class Block extends BlockBehaviour implements ItemLike {
     public static final MapCodec<Block> CODEC = simpleCodec(Block::new);
@@ -339,11 +334,9 @@ public class Block extends BlockBehaviour implements ItemLike {
         return this.explosionResistance;
     }
 
-    public void wasExploded(ServerLevel p_361938_, BlockPos p_49845_, Explosion p_49846_) {
-    }
+    public void wasExploded(ServerLevel p_361938_, BlockPos p_49845_, Explosion p_49846_) {}
 
-    public void stepOn(Level p_152431_, BlockPos p_152432_, BlockState p_152433_, Entity p_152434_) {
-    }
+    public void stepOn(Level p_152431_, BlockPos p_152432_, BlockState p_152433_, Entity p_152434_) {}
 
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext p_49820_) {

@@ -1,7 +1,7 @@
 package net.minecraft.client.renderer;
 
 import com.gatetohell.Curses;
-import com.gatetohell.CursesEvents;
+import com.gatetohell.Enums;
 import com.gatetohell.Initializing;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -456,7 +456,7 @@ public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseab
 
         FramePass framepass = framegraphbuilder.addPass("clear");
         this.targets.main = framepass.readsAndWrites(this.targets.main);
-        if(!Curses.BrokeSkyBufferClear) {
+        if(Curses.ClearBuffer == Enums.BrokeBuffer.None) {
             framepass.executes(() -> {
                 RenderSystem.clearColor(vector4f.x, vector4f.y, vector4f.z, 0.0F);
                 RenderSystem.clear(16640);

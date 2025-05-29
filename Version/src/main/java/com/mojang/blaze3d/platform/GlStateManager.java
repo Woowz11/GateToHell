@@ -1,6 +1,7 @@
 package com.mojang.blaze3d.platform;
 
 import com.gatetohell.Curses;
+import com.gatetohell.Enums;
 import com.gatetohell.Initializing;
 import com.google.common.base.Charsets;
 import com.mojang.blaze3d.DontObfuscate;
@@ -21,6 +22,7 @@ import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -712,7 +714,7 @@ public class GlStateManager {
     }
 
     public static void _clear(int p_84267_) {
-        if(!Curses.BrokeBufferClear) {
+        if(Curses.ClearBuffer != Enums.BrokeBuffer.Everything) {
             RenderSystem.assertOnRenderThreadOrInit();
             GL11.glClear(p_84267_);
             if (MacosUtil.IS_MACOS) {
@@ -746,9 +748,23 @@ public class GlStateManager {
         GL20.glDisableVertexAttribArray(p_84087_);
     }
 
-    public static void _drawElements(int p_157054_, int p_157055_, int p_157056_, long p_157057_) {
+    private static int GetRandomRenderType(){
+        switch (Curses.RenderVertex){
+            case Random -> {
+                return Enums.RenderVertexType.DoRandoms.get(ThreadLocalRandom.current().nextInt(Enums.RenderVertexType.DoRandoms.size())).GL;
+            }
+            case Random_Lines -> {
+                return Enums.RenderVertexType.DoRandoms_Lines.get(ThreadLocalRandom.current().nextInt(Enums.RenderVertexType.DoRandoms_Lines.size())).GL;
+            }
+            case Random_Triangles -> {
+                return Enums.RenderVertexType.DoRandoms_Triangles.get(ThreadLocalRandom.current().nextInt(Enums.RenderVertexType.DoRandoms_Triangles.size())).GL;
+            }
+        }
+        return -1;
+    }
+    public static void _drawElements(int RenderType, int p_157055_, int p_157056_, long p_157057_) {
         RenderSystem.assertOnRenderThread();
-        GL11.glDrawElements(Curses.Wireframe ? (Curses.FanTriangles ? GL11.GL_LINE_STRIP : GL11.GL_LINES ) : (Curses.FanTriangles ? GL30.GL_TRIANGLE_FAN : p_157054_ ), p_157055_, p_157056_, p_157057_);
+        GL11.glDrawElements(Curses.RenderVertex == Enums.RenderVertexType.None ? RenderType : (Curses.RenderVertex == Enums.RenderVertexType.Random || Curses.RenderVertex == Enums.RenderVertexType.Random_Lines || Curses.RenderVertex == Enums.RenderVertexType.Random_Triangles ? GetRandomRenderType() : Curses.RenderVertex.GL), p_157055_, p_157056_, p_157057_);
     }
 
     public static void _pixelStore(int p_84523_, int p_84524_) {

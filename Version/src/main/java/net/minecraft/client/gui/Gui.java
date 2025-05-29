@@ -1,7 +1,7 @@
 package net.minecraft.client.gui;
 
 import com.gatetohell.Curses;
-import com.gatetohell.CursesEvents;
+import com.gatetohell.Enums;
 import com.gatetohell.Initializing;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
@@ -204,7 +204,7 @@ public class Gui {
     }
 
     private void renderCameraOverlays(GuiGraphics p_333627_, DeltaTracker p_344236_) {
-        if (Minecraft.useFancyGraphics() && !Curses.BrokeBufferClear && !Curses.BrokeSkyBufferClear && !Initializing.TransparentBuffer) {
+        if (Minecraft.useFancyGraphics() && Curses.ClearBuffer == Enums.BrokeBuffer.None && !Initializing.TransparentBuffer) {
             this.renderVignette(p_333627_, this.minecraft.getCameraEntity());
         }
 

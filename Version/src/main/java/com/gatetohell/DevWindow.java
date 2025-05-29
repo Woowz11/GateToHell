@@ -5,7 +5,6 @@ import org.joml.Vector2i;
 import javax.swing.Timer;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
@@ -241,19 +240,24 @@ public class DevWindow {
         Result.setOpaque(false);
         return Result;
     }
-    private enum CurseFieldType{ Checkbox, Range}
+    private enum CurseFieldType{ Checkbox, Range, Color, Enums }
     private static class CurseField{
         private final Field Field;
         private final CurseFieldType Type;
         protected boolean HasDesc = false;
+        private Color CurrentColor = new Color(228,228,228,228);
+        protected Class<Enum> EnumClass;
 
         private CurseField(Field Field, CurseFieldType Type){ this.Field = Field; this.Type = Type; }
 
         protected JLabel Text = null;
         protected JCheckBox Checkbox = null;
         protected JSpinner NumberRange = null;
+        protected JComboBox<Enum<?>> SelectEnum = null;
+        protected JButton Button = null;
         protected ItemListener IL = null;
         protected ChangeListener CL = null;
+        protected ActionListener AL = null;
 
         protected void Update(){
             switch (Type){
@@ -280,6 +284,31 @@ public class DevWindow {
                     this.NumberRange.addChangeListener(CL);
                     break;
                 }
+                case Color:
+                {
+                    this.Button.removeActionListener(AL);
+                    try{
+                        CurrentColor = (Color) this.Field.get(null);
+                        Button.setBackground(CurrentColor);
+                        Button.setForeground(getContrastColor(CurrentColor));
+                    }catch(IllegalAccessException e){
+                        e.printStackTrace();
+                    }
+                    this.Button.addActionListener(AL);
+                    break;
+                }
+                case Enums:
+                {
+                    this.SelectEnum.removeActionListener(AL);
+                    try{
+                        Enum<?> CurrentEnum = (Enum<?>) this.Field.get(null);
+                        this.SelectEnum.setSelectedItem(CurrentEnum);
+                    }catch(IllegalAccessException e){
+                        e.printStackTrace();
+                    }
+                    this.SelectEnum.addActionListener(AL);
+                    break;
+                }
             }
         }
 
@@ -296,6 +325,18 @@ public class DevWindow {
                 {
                     this.Text.setToolTipText(Desc);
                     this.NumberRange.setToolTipText(Desc);
+                    break;
+                }
+                case Color:
+                {
+                    this.Text.setToolTipText(Desc);
+                    this.Button.setToolTipText(Desc);
+                    break;
+                }
+                case Enums:
+                {
+                    this.Text.setToolTipText(Desc);
+                    this.SelectEnum.setToolTipText(Desc);
                     break;
                 }
             }
@@ -339,6 +380,12 @@ public class DevWindow {
                 CurseFieldType Type = CurseFieldType.Checkbox;
                 if(F.getType().equals(double.class) || F.getType().equals(Double.class)){
                     Type = CurseFieldType.Range;
+                }else if(F.getType().equals(Color.class)){
+                    Type = CurseFieldType.Color;
+                }
+
+                if(F.getType().isEnum()){
+                    Type = CurseFieldType.Enums;
                 }
 
                 CurseField CF = new CurseField(F, Type);
@@ -376,7 +423,7 @@ public class DevWindow {
                         CF.Text     = Name;
                         CF.Checkbox = Checkbox;
 
-                        CF.IL = (ItemEvent e) -> {
+                        CF.IL = e -> {
                             try{
                                 F.setBoolean(null, Checkbox.isSelected());
                             } catch (IllegalAccessException ex) {
@@ -403,9 +450,71 @@ public class DevWindow {
                         CF.Text        = Name       ;
                         CF.NumberRange = NumberRange;
 
-                        CF.CL = (ChangeEvent e) -> {
+                        CF.CL = e -> {
                             try{
                                 F.setDouble(null, (Double)NumberRange.getValue());
+                            } catch (IllegalAccessException ex) {
+                                ex.printStackTrace();
+                            }
+                        };
+
+                        break;
+                    }
+                    case Color:
+                    {
+                        JLabel Name = new JLabel(FName);
+                        Name.setOpaque(false);
+                        JButton ColorSelect = new JButton("Цвет");
+                        ColorSelect.setOpaque(true);
+
+                        gbc.weightx = 0.75;
+                        gbc.gridx = 0;
+                        Result.add(Name       , gbc);
+                        gbc.weightx = 0.25;
+                        gbc.gridx = 1;
+                        Result.add(ColorSelect, gbc);
+
+                        CF.Text   = Name       ;
+                        CF.Button = ColorSelect;
+
+                        CF.AL = e -> {
+                            Color ResultColor = JColorChooser.showDialog(W, "Выберите цвет для " + FName, CF.CurrentColor);
+                            if(ResultColor != null) {
+                                try {
+                                    F.set(null, ResultColor);
+
+                                    ColorSelect.setBackground(ResultColor);
+                                    ColorSelect.setForeground(getContrastColor(ResultColor));
+                                } catch (IllegalAccessException ex) {
+                                    ex.printStackTrace();
+                                }
+                            }
+                        };
+
+                        break;
+                    }
+                    case Enums:
+                    {
+                        JLabel Name = new JLabel(FName);
+                        Name.setOpaque(false);
+                        Class<?> EnumClass = F.getType();
+                        JComboBox<Enum<?>> SelectEnum = new JComboBox<>((Enum<?>[]) EnumClass.getEnumConstants());
+                        SelectEnum.setOpaque(false);
+
+                        gbc.weightx = 0.75;
+                        gbc.gridx = 0;
+                        Result.add(Name       , gbc);
+                        gbc.weightx = 0.25;
+                        gbc.gridx = 1;
+                        Result.add(SelectEnum, gbc);
+
+                        CF.Text        = Name     ;
+                        CF.SelectEnum = SelectEnum;
+
+                        CF.AL = e -> {
+                            try{
+                                Enum<?> Value = (Enum<?>) SelectEnum.getSelectedItem();
+                                F.set(null, Value);
                             } catch (IllegalAccessException ex) {
                                 ex.printStackTrace();
                             }
@@ -434,7 +543,7 @@ public class DevWindow {
 
             for(CurseField CF : CurseFields){
                 if(CF.Field.getName().equals(FieldName)){
-                    CF.AddDesc(Desc);
+                    CF.AddDesc("[" + CF.Field.getName() + "] " + Desc);
                     break;
                 }
             }
@@ -693,5 +802,10 @@ public class DevWindow {
         Result.add(Buttons, BorderLayout.EAST);
 
         return Result;
+    }
+
+    private static Color getContrastColor(Color color) {
+        double luminance = (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255;
+        return luminance > 0.5 ? Color.BLACK : Color.WHITE;
     }
 }
