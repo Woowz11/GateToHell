@@ -12,3 +12,8 @@
 /setblock ~ ~ ~ minecraft:ender_chest
 /setblock ~ ~ ~ minecraft:end_portal_frame
 /setblock ~ ~ ~ minecraft:end_portal
+/kill
+/time set 0
+/gamerule maxEntityCramming
+/gamerule maxEntityCramming 50
+/gamerule maxEntityCramming 100

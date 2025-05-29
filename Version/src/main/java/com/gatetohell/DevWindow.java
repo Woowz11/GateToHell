@@ -46,6 +46,7 @@ public class DevWindow {
 
         CreateTab("Переменные", T_ValuesInfo()); /* 0 */
         CreateTab("Проклятья" , T_Curses    ()); /* 1 */
+        CreateTab("Ивенты"    , T_Events    ()); /* 2 */
 
         Tabs.addChangeListener((e) -> {
             SelectedTab = Tabs.getSelectedIndex();
@@ -283,7 +284,7 @@ public class DevWindow {
         int WhatColumn = 0;
         Field[] Fields = Curses.class.getDeclaredFields();
         for(Field F : Fields){
-            if(Modifier.isStatic(F.getModifiers())){
+            if(Modifier.isStatic(F.getModifiers()) && !Modifier.isPrivate(F.getModifiers())){
                 F.setAccessible(true);
 
                 boolean ThatString = F.getType().equals(String.class);
@@ -388,6 +389,14 @@ public class DevWindow {
         Content.add(Column1);
         Content.add(Column2);
         Content.add(Column3);
+        return Content;
+    }
+
+    private static JPanel T_Events(){
+        JPanel Content = new JPanel(new GridLayout(1, 1));
+
+        //Class<?>
+
         return Content;
     }
 

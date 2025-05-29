@@ -96,8 +96,8 @@ public class Channel {
         AL10.alSourcefv(this.source, 4100, new float[]{(float)p_83655_.x, (float)p_83655_.y, (float)p_83655_.z});
     }
 
-    public void setPitch(float p_83651_) {
-        AL10.alSourcef(this.source, 4099, (Curses.RandomSpeedSounds ? (float) Math.random()*4 : (p_83651_ * (Curses.SlowSounds ? 0.25f : (Curses.FastSounds ? 4 : 1)))));
+    public void setPitch(float pitch) {
+        AL10.alSourcef(this.source, AL10.AL_PITCH, pitch * (float)Math.abs((Curses.RandomSpeedSound ? (Math.random()>0.5 ? (Curses.SoundSpeed + (1 - Curses.SoundSpeed) * Math.random()) : 1 / (Curses.SoundSpeed + (1 - Curses.SoundSpeed) * Math.random()) ) : Curses.SoundSpeed )));
     }
 
     public void setLooping(boolean p_83664_) {
