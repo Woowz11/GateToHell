@@ -23,7 +23,8 @@ public class DevWindow {
 
     static final Map<GTH_Value, ValueProgressbarInfo> ValueProgressBars = new HashMap<>();
     static final List<ValueInfo>   ValueInfos   = new ArrayList<>();
-    static final List<CurseField>  CurseFields  = new ArrayList<>();
+    static final List<FieldInfo>  CurseFields  = new ArrayList<>();
+    static final List<FieldInfo>  InitFields   = new ArrayList<>();
     static final List<EventMethod> EventMethods = new ArrayList<>();
 
     static JFrame W = null;
@@ -37,8 +38,6 @@ public class DevWindow {
         W.setSize(WindowSize.x, WindowSize.y);
 
         CreateWindowContent();
-
-        W.setVisible(true);
     }
 
     private static JTabbedPane Tabs = null;
@@ -48,9 +47,8 @@ public class DevWindow {
 
         CreateTab("Переменные"      , T_ValuesInfo()); /* 0 */
         CreateTab("Проклятья"       , T_Curses    ()); /* 1 */
-        CreateTab("Инициализируемое", T_Events    ()); /* 2 */
-        CreateTab("Ивенты"          , T_Events    ()); /* 3 */
-        CreateTab("Проклятья ивенты", T_Events    ()); /* 4 */
+        CreateTab("Ивенты"          , T_Events    ()); /* 2 */
+        CreateTab("Проклятья ивенты", T_Events    ()); /* 3 */
 
         Tabs.addChangeListener((e) -> {
             SelectedTab = Tabs.getSelectedIndex();
@@ -76,7 +74,7 @@ public class DevWindow {
             }
             case 1:
             {
-                for(CurseField CF : CurseFields){
+                for(FieldInfo CF : CurseFields){
                     CF.Update();
                 }
                 break;
@@ -88,6 +86,37 @@ public class DevWindow {
 
     private static void CreateTab(String TabName, JPanel Content){
         Tabs.addTab(TabName, Content);
+    }
+
+    /* ============================================= */
+
+    protected static boolean WaitingInitialization = false;
+    protected static void CreateInitializingWindow(){
+        WaitingInitialization = true;
+
+        SwingUtilities.invokeLater(() -> {
+            JFrame Dialog = new JFrame("Выберите инициализируемое!");
+            Dialog.setSize(WindowSize.x, WindowSize.y);
+            Dialog.setResizable(false);
+            Dialog.setLocationRelativeTo(null);
+            Dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+            Dialog.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosed(WindowEvent e) {
+                    WaitingInitialization = false;
+                    W.setVisible(true);
+                }
+            });
+
+            Dialog.add(T_Initializing());
+
+            for(FieldInfo CF : InitFields){
+                CF.Update();
+            }
+
+            Dialog.setVisible(true);
+        });
     }
 
     /* ============================================= */
@@ -240,15 +269,15 @@ public class DevWindow {
         Result.setOpaque(false);
         return Result;
     }
-    private enum CurseFieldType{ Checkbox, Range, Color, Enums }
-    private static class CurseField{
+    private enum FieldInfoType { Checkbox, Range, Color, Enums }
+    private static class FieldInfo {
         private final Field Field;
-        private final CurseFieldType Type;
+        private final FieldInfoType Type;
         protected boolean HasDesc = false;
         private Color CurrentColor = new Color(228,228,228,228);
         protected Class<Enum> EnumClass;
 
-        private CurseField(Field Field, CurseFieldType Type){ this.Field = Field; this.Type = Type; }
+        private FieldInfo(Field Field, FieldInfoType Type){ this.Field = Field; this.Type = Type; }
 
         protected JLabel Text = null;
         protected JCheckBox Checkbox = null;
@@ -342,7 +371,7 @@ public class DevWindow {
             }
         }
     }
-    private static JPanel T_Curses(){
+    private static JPanel CreateValuesChangerPanel(Class<?> WhereFields, List<FieldInfo> ResultList){
         JPanel Content = new JPanel(new GridLayout(1, 3));
         JPanel Column1 = new JPanel(new GridLayout(0, 1));
         JPanel Column2 = new JPanel(new GridLayout(0, 1));
@@ -355,7 +384,7 @@ public class DevWindow {
         int WhatColumn = 0;
         boolean Eval = false;
         int i = 0;
-        Field[] Fields = Curses.class.getDeclaredFields();
+        Field[] Fields = WhereFields.getDeclaredFields();
         for(Field F : Fields){
             if(Modifier.isStatic(F.getModifiers()) && !Modifier.isPrivate(F.getModifiers())){
                 F.setAccessible(true);
@@ -377,18 +406,18 @@ public class DevWindow {
 
                 i++;
 
-                CurseFieldType Type = CurseFieldType.Checkbox;
+                FieldInfoType Type = FieldInfoType.Checkbox;
                 if(F.getType().equals(double.class) || F.getType().equals(Double.class)){
-                    Type = CurseFieldType.Range;
+                    Type = FieldInfoType.Range;
                 }else if(F.getType().equals(Color.class)){
-                    Type = CurseFieldType.Color;
+                    Type = FieldInfoType.Color;
                 }
 
                 if(F.getType().isEnum()){
-                    Type = CurseFieldType.Enums;
+                    Type = FieldInfoType.Enums;
                 }
 
-                CurseField CF = new CurseField(F, Type);
+                FieldInfo CF = new FieldInfo(F, Type);
 
                 switch (WhatColumn){
                     case 0: Eval = Column1.getComponentCount() % 2 == 0; break;
@@ -524,7 +553,7 @@ public class DevWindow {
                     }
                 }
 
-                CurseFields.add(CF);
+                ResultList.add(CF);
 
                 switch (WhatColumn){
                     case 0: Column1.add(Result); break;
@@ -541,7 +570,7 @@ public class DevWindow {
             String FieldName = e.getKey();
             String Desc      = e.getValue();
 
-            for(CurseField CF : CurseFields){
+            for(FieldInfo CF : ResultList){
                 if(CF.Field.getName().equals(FieldName)){
                     CF.AddDesc("[" + CF.Field.getName() + "] " + Desc);
                     break;
@@ -549,7 +578,7 @@ public class DevWindow {
             }
         }
 
-        for(CurseField CF : CurseFields){
+        for(FieldInfo CF : ResultList){
             if(!CF.HasDesc){
                 CF.AddDesc("Описание отсутствует!");
             }
@@ -564,6 +593,13 @@ public class DevWindow {
         Content.add(Column2);
         Content.add(Column3);
         return Content;
+    }
+
+    private static JPanel T_Curses(){
+        return CreateValuesChangerPanel(Curses.class, CurseFields);
+    }
+    private static JPanel T_Initializing(){
+        return CreateValuesChangerPanel(Initializing.class, InitFields);
     }
 
     private static class EventMethod{

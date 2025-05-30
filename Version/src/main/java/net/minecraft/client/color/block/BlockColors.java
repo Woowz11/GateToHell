@@ -1,10 +1,9 @@
 package net.minecraft.client.color.block;
 
+import com.gatetohell.Helper;
+import com.gatetohell.Initializing;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.Nullable;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.IdMapper;
@@ -13,17 +12,17 @@ import net.minecraft.util.ARGB;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DoublePlantBlock;
-import net.minecraft.world.level.block.RedStoneWireBlock;
-import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Set;
 
 @OnlyIn(Dist.CLIENT)
 public class BlockColors {
@@ -94,6 +93,9 @@ public class BlockColors {
     }
 
     public int getColor(BlockState p_92583_, Level p_92584_, BlockPos p_92585_) {
+        if(Initializing.RandomColors){ return ARGB.color(Helper.RandomI(0,255), Helper.RandomI(0,255), Helper.RandomI(0,255)); }
+        if(Initializing.Missingo){ return ARGB.color(255,255,255); }
+
         BlockColor blockcolor = this.blockColors.byId(BuiltInRegistries.BLOCK.getId(p_92583_.getBlock()));
         if (blockcolor != null) {
             return blockcolor.getColor(p_92583_, null, null, 0);
@@ -104,6 +106,9 @@ public class BlockColors {
     }
 
     public int getColor(BlockState p_92578_, @Nullable BlockAndTintGetter p_92579_, @Nullable BlockPos p_92580_, int p_92581_) {
+        if(Initializing.RandomColors){ return ARGB.color(Helper.RandomI(0,255), Helper.RandomI(0,255), Helper.RandomI(0,255)); }
+        if(Initializing.Missingo){ return ARGB.color(255,255,255); }
+
         BlockColor blockcolor = this.blockColors.byId(BuiltInRegistries.BLOCK.getId(p_92578_.getBlock()));
         return blockcolor == null ? -1 : blockcolor.getColor(p_92578_, p_92579_, p_92580_, p_92581_);
     }

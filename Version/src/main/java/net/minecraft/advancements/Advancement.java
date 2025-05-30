@@ -4,11 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.CriterionValidator;
 import net.minecraft.core.HolderGetter;
@@ -24,6 +19,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
+
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public record Advancement(
     Optional<ResourceLocation> parent,
@@ -133,9 +133,6 @@ public record Advancement(
             return this;
         }
 
-        @Deprecated(
-            forRemoval = true
-        )
         public Advancement.Builder parent(ResourceLocation p_138397_) {
             this.parent = Optional.of(p_138397_);
             return this;

@@ -1,11 +1,12 @@
 package net.minecraft.client.renderer.texture;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import javax.annotation.Nullable;
 import net.minecraft.client.renderer.SpriteCoordinateExpander;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 @OnlyIn(Dist.CLIENT)
 public class TextureAtlasSprite {
@@ -18,15 +19,15 @@ public class TextureAtlasSprite {
     private final float v0;
     private final float v1;
 
-    protected TextureAtlasSprite(ResourceLocation p_250211_, SpriteContents p_248526_, int p_248950_, int p_249741_, int p_248672_, int p_248637_) {
+    protected TextureAtlasSprite(ResourceLocation p_250211_, SpriteContents p_248526_, int p_248950_, int p_249741_, int x, int y) {
         this.atlasLocation = p_250211_;
         this.contents = p_248526_;
-        this.x = p_248672_;
-        this.y = p_248637_;
-        this.u0 = (float)p_248672_ / (float)p_248950_;
-        this.u1 = (float)(p_248672_ + p_248526_.width()) / (float)p_248950_;
-        this.v0 = (float)p_248637_ / (float)p_249741_;
-        this.v1 = (float)(p_248637_ + p_248526_.height()) / (float)p_249741_;
+        this.x = x;
+        this.y = y;
+        this.u0 = (float)x / (float)p_248950_;
+        this.u1 = (float)(x + p_248526_.width()) / (float)p_248950_;
+        this.v0 = (float)y / (float)p_249741_;
+        this.v1 = (float)(y + p_248526_.height()) / (float)p_249741_;
     }
 
     public int getX() {

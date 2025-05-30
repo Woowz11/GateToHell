@@ -3,23 +3,20 @@ package net.minecraft.server.packs;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
 import com.mojang.logging.LogUtils;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.resources.IoSupplier;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class FilePackResources extends AbstractPackResources {
     static final Logger LOGGER = LogUtils.getLogger();
@@ -204,8 +201,8 @@ public class FilePackResources extends AbstractPackResources {
             }
         }
 
-        @Override
-        protected void finalize() throws Throwable {
+        @SuppressWarnings("removal")
+        @Override protected void finalize() throws Throwable {
             this.close();
             super.finalize();
         }

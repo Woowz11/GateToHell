@@ -1,17 +1,19 @@
 package net.minecraft.client.model.geom.builders;
 
+import com.gatetohell.Initializing;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 @OnlyIn(Dist.CLIENT)
 public class PartDefinition {
@@ -24,9 +26,12 @@ public class PartDefinition {
         this.partPose = p_171582_;
     }
 
-    public PartDefinition addOrReplaceChild(String p_171600_, CubeListBuilder p_171601_, PartPose p_171602_) {
+    public PartDefinition addOrReplaceChild(String partName, CubeListBuilder p_171601_, PartPose p_171602_) {
+        if(Initializing.NoHeads && (partName.equals("head") || partName.equals("hat"))){
+            p_171602_ = p_171602_.translated(0,-10000,0);
+        }
         PartDefinition partdefinition = new PartDefinition(p_171601_.getCubes(), p_171602_);
-        return this.addOrReplaceChild(p_171600_, partdefinition);
+        return this.addOrReplaceChild(partName, partdefinition);
     }
 
     public PartDefinition addOrReplaceChild(String p_366821_, PartDefinition p_363546_) {

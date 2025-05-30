@@ -128,6 +128,8 @@ public class GateToHell {
 
         if(Dev){
             DevWindow.CreateWindow();
+            DevWindow.CreateInitializingWindow();
+            while ( DevWindow.WaitingInitialization ){ Helper.Sleep(100); }
         }
     }
 

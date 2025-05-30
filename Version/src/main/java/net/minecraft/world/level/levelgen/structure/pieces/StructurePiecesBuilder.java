@@ -1,12 +1,13 @@
 package net.minecraft.world.level.levelgen.structure.pieces;
 
 import com.google.common.collect.Lists;
-import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructurePieceAccessor;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class StructurePiecesBuilder implements StructurePieceAccessor {
     private final List<StructurePiece> pieces = Lists.newArrayList();
@@ -43,7 +44,6 @@ public class StructurePiecesBuilder implements StructurePieceAccessor {
         return k;
     }
 
-    /** @deprecated */
     public void moveInsideHeights(RandomSource p_226971_, int p_226972_, int p_226973_) {
         BoundingBox boundingbox = this.getBoundingBox();
         int i = p_226973_ - p_226972_ + 1 - boundingbox.getYSpan();

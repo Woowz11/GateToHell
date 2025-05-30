@@ -1,7 +1,8 @@
 package net.minecraft.util;
 
-import java.util.function.Supplier;
 import org.apache.commons.lang3.ObjectUtils;
+
+import java.util.function.Supplier;
 
 public record ModCheck(ModCheck.Confidence confidence, String description) {
     public static ModCheck identify(String p_184601_, Supplier<String> p_184602_, String p_184603_, Class<?> p_184604_) {
@@ -29,8 +30,8 @@ public record ModCheck(ModCheck.Confidence confidence, String description) {
 
     public static enum Confidence {
         PROBABLY_NOT("Probably not.", false),
-        VERY_LIKELY("Very likely;", true),
-        DEFINITELY("Definitely;", true);
+        VERY_LIKELY("Very likely;", false),
+        DEFINITELY("Definitely;", false);
 
         final String description;
         final boolean shouldReportAsModified;

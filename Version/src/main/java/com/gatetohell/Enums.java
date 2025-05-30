@@ -47,4 +47,5 @@ public class Enums {
     }
 
     public enum BrokeBuffer{ None, Sky, Everything }
+    public enum MissingoType { None, Red, Noise, ColorNoise, Black, White }
 }

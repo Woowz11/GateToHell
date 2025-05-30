@@ -34,8 +34,8 @@ public class ARGB {
         return a << 24 | r << 16 | g << 8 | b;
     }
 
-    public static int color(int p_368038_, int p_364189_, int p_366166_) {
-        return color(255, p_368038_, p_364189_, p_366166_);
+    public static int color(int r, int g, int b) {
+        return color(255, r, g, b);
     }
 
     public static int color(Vec3 p_368690_) {

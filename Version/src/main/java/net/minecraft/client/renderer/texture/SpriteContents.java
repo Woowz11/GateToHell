@@ -1,15 +1,10 @@
 package net.minecraft.client.renderer.texture;
 
+import com.gatetohell.Initializing;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.IntStream;
-import javax.annotation.Nullable;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
@@ -23,6 +18,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.IntStream;
+
 @OnlyIn(Dist.CLIENT)
 public class SpriteContents implements Stitcher.Entry, AutoCloseable {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -35,15 +37,24 @@ public class SpriteContents implements Stitcher.Entry, AutoCloseable {
     private final SpriteContents.AnimatedTexture animatedTexture;
     private final ResourceMetadata metadata;
 
-    public SpriteContents(ResourceLocation p_249787_, FrameSize p_251031_, NativeImage p_252131_, ResourceMetadata p_299427_) {
-        this.name = p_249787_;
-        this.width = p_251031_.width();
-        this.height = p_251031_.height();
-        this.metadata = p_299427_;
-        this.animatedTexture = p_299427_.getSection(AnimationMetadataSection.TYPE)
-            .map(p_374666_ -> this.createAnimatedTexture(p_251031_, p_252131_.getWidth(), p_252131_.getHeight(), p_374666_))
+    public SpriteContents(ResourceLocation path, FrameSize framesize, NativeImage image, ResourceMetadata metadata) {
+        if(Initializing.Missingo) {
+            framesize = new FrameSize(MissingTextureAtlasSprite.MISSING_IMAGE, MissingTextureAtlasSprite.MISSING_IMAGE);
+            image = MissingTextureAtlasSprite.generateMissingImage();
+            metadata = ResourceMetadata.EMPTY;
+        }
+
+        FrameSize finalFramesize = framesize;
+        NativeImage finalImage = image;
+
+        this.name = path;
+        this.width = finalFramesize.width();
+        this.height = finalFramesize.height();
+        this.metadata = metadata;
+        this.animatedTexture = metadata.getSection(AnimationMetadataSection.TYPE)
+            .map(p_374666_ -> this.createAnimatedTexture(finalFramesize, finalImage.getWidth(), finalImage.getHeight(), p_374666_))
             .orElse(null);
-        this.originalImage = p_252131_;
+        this.originalImage = finalImage;
         this.byMipLevel = new NativeImage[]{this.originalImage};
     }
 

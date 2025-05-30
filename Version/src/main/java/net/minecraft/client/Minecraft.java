@@ -326,6 +326,9 @@ public class Minecraft extends ReentrantBlockableEventLoop<Runnable> implements 
     public Minecraft(final GameConfig p_91084_) {
         super("Client");
         instance = this;
+
+        GateToHell.Start();
+
         this.clientStartTimeMs = System.currentTimeMillis();
         this.gameDirectory = p_91084_.location.gameDirectory;
         File file1 = p_91084_.location.assetDirectory;
@@ -731,8 +734,6 @@ public class Minecraft extends ReentrantBlockableEventLoop<Runnable> implements 
     }
 
     public void run() {
-        GateToHell.Start();
-
         this.gameThread = Thread.currentThread();
         if (Runtime.getRuntime().availableProcessors() > 4) {
             this.gameThread.setPriority(10);

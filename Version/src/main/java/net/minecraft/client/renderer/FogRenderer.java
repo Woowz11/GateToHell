@@ -52,7 +52,7 @@ public class FogRenderer {
         float f2;
         if (fogtype == FogType.WATER) {
             long i = Util.getMillis();
-            int k = (Helper.ThatChangedColor(Curses.ColorWater) ? ARGB.color(Curses.ColorWater) : p_361507_.getBiome(BlockPos.containing(p_362477_.getPosition())).value().getWaterFogColor());
+            int k = (Helper.ThatChangedColor(Curses.ColorWater) ? ARGB.color(Curses.ColorWater) : (Initializing.RandomColors ? ARGB.color(Helper.RandomI(0,255), Helper.RandomI(0,255), Helper.RandomI(0,255)) : p_361507_.getBiome(BlockPos.containing(p_362477_.getPosition())).value().getWaterFogColor() ));
             if (biomeChangedTime < 0L) {
                 targetBiomeFog = k;
                 previousBiomeFog = k;

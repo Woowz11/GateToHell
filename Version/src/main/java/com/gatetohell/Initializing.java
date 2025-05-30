@@ -20,4 +20,13 @@ public class Initializing {
 
     protected static final String RandomColors_Desc = "Случайные цвета";
     public static boolean RandomColors = D_Boolean;
+
+    protected static final String NoHeads_Desc = "Существа без голов";
+    public static boolean NoHeads = D_Boolean;
+
+    protected static final String Missingo_Desc = "Делает текстуры в виде missingo";
+    public static boolean Missingo = D_Boolean;
+
+    protected static final String MissingoType_Desc = "Изменяет тип генерации missingo текстуры";
+    public static Enums.MissingoType MissingoType = Enums.MissingoType.None;
 }

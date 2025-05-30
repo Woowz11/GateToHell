@@ -19,4 +19,14 @@ public class Helper {
 
     /** Случайное целое число от MIN до MAX */
     public static int RandomI(int min, int max){ return ThreadLocalRandom.current().nextInt(min, max + 1); }
+
+    /** Ожидание в миллисек */
+    public static void Sleep(int mil){
+        try {
+            Thread.sleep(mil);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        }
+    }
 }

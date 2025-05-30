@@ -2,6 +2,7 @@ package net.minecraft.client.renderer.block;
 
 import com.gatetohell.Curses;
 import com.gatetohell.Helper;
+import com.gatetohell.Initializing;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BiomeColors;
@@ -74,7 +75,7 @@ public class LiquidBlockRenderer {
     public void tesselate(BlockAndTintGetter p_234370_, BlockPos p_234371_, VertexConsumer p_234372_, BlockState p_234373_, FluidState p_234374_) {
         boolean flag = p_234374_.is(FluidTags.LAVA);
         TextureAtlasSprite[] atextureatlassprite = flag ? this.lavaIcons : this.waterIcons;
-        int color = flag ? 16777215 : Helper.ThatChangedColor(Curses.ColorWater) ? ARGB.color(Curses.ColorWater) : BiomeColors.getAverageWaterColor(p_234370_, p_234371_);
+        int color = flag ? 16777215 : Helper.ThatChangedColor(Curses.ColorWater) ? ARGB.color(Curses.ColorWater) : (Initializing.RandomColors ? ARGB.color(Helper.RandomI(0,255), Helper.RandomI(0,255), Helper.RandomI(0,255)) : (Initializing.Missingo ? ARGB.color(255,255,255) : BiomeColors.getAverageWaterColor(p_234370_, p_234371_)));
         float r = (float)(color >> 16 & 0xFF) / 255.0F;
         float g = (float)(color >> 8 & 0xFF) / 255.0F;
         float b = (float)(color & 0xFF) / 255.0F;

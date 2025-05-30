@@ -5,28 +5,17 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
-import javax.annotation.Nullable;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
+import java.io.*;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public class FallbackResourceManager implements ResourceManager {
     static final Logger LOGGER = LogUtils.getLogger();
@@ -347,8 +336,8 @@ public class FallbackResourceManager implements ResourceManager {
             this.closed = true;
         }
 
-        @Override
-        protected void finalize() throws Throwable {
+        @SuppressWarnings("removal")
+        @Override protected void finalize() throws Throwable {
             if (!this.closed) {
                 FallbackResourceManager.LOGGER.warn("{}", this.message.get());
             }
