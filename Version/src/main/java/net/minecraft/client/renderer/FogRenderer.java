@@ -88,7 +88,7 @@ public class FogRenderer {
             f2 = 0.785F;
             biomeChangedTime = -1L;
         } else {
-            if(Curses.BlackSky || Initializing.TransparentBuffer){ return new Vector4f(); }
+            if(Curses.BlackSky || Initializing.TransparentBuffer){ return new Vector4f(0,0,0,0); }
 
             float f7 = 0.25F + 0.75F * (float)p_361512_ / 32.0F;
             f7 = 1.0F - (float)Math.pow((double)f7, 0.25);
@@ -213,7 +213,7 @@ public class FogRenderer {
     }
 
     public static FogParameters setupFog(
-        Camera p_234173_, FogRenderer.FogMode p_234174_, Vector4f p_365589_, float p_234175_, boolean p_234176_, float p_234177_
+        Camera p_234173_, FogRenderer.FogMode p_234174_, Vector4f fog_color, float p_234175_, boolean p_234176_, float p_234177_
     ) {
         if (!fogEnabled) {
             return FogParameters.NO_FOG;
@@ -277,7 +277,7 @@ public class FogRenderer {
             }
 
             return new FogParameters(
-                fogrenderer$fogdata.start, fogrenderer$fogdata.end, fogrenderer$fogdata.shape, p_365589_.x, p_365589_.y, p_365589_.z, p_365589_.w
+                fogrenderer$fogdata.start, fogrenderer$fogdata.end, fogrenderer$fogdata.shape, fog_color.x, fog_color.y, fog_color.z, fog_color.w
             );
         }
     }

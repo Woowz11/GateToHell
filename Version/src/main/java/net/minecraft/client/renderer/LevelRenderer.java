@@ -422,10 +422,10 @@ public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseab
 
         profilerfiller.popPush("fog");
         float f1 = p_109605_.getRenderDistance();
-        boolean flag1 = this.minecraft.level.effects().isFoggyAt(Mth.floor(d0), Mth.floor(d1)) || this.minecraft.gui.getBossOverlay().shouldCreateWorldFog();
-        Vector4f vector4f = FogRenderer.computeFogColor(p_109604_, f, this.minecraft.level, this.minecraft.options.getEffectiveRenderDistance(), p_109605_.getDarkenWorldAmount(f));
-        FogParameters fogparameters = FogRenderer.setupFog(p_109604_, FogRenderer.FogMode.FOG_TERRAIN, vector4f, f1, flag1, f);
-        FogParameters fogparameters1 = FogRenderer.setupFog(p_109604_, FogRenderer.FogMode.FOG_SKY, vector4f, f1, flag1, f);
+        Vector4f fog_color = FogRenderer.computeFogColor(p_109604_, f, this.minecraft.level, this.minecraft.options.getEffectiveRenderDistance(), p_109605_.getDarkenWorldAmount(f));
+        boolean idk = this.minecraft.level.effects().isFoggyAt(Mth.floor(d0), Mth.floor(d1)) || this.minecraft.gui.getBossOverlay().shouldCreateWorldFog();
+        FogParameters fogparameters = FogRenderer.setupFog(p_109604_, FogRenderer.FogMode.FOG_TERRAIN, fog_color, f1, idk, f);
+        FogParameters fogparameters1 = FogRenderer.setupFog(p_109604_, FogRenderer.FogMode.FOG_SKY, fog_color, f1, idk, f);
         profilerfiller.popPush("cullEntities");
         boolean flag2 = this.collectVisibleEntities(p_109604_, frustum, this.visibleEntities);
         this.visibleEntityCount = this.visibleEntities.size();
@@ -458,10 +458,10 @@ public class LevelRenderer implements ResourceManagerReloadListener, AutoCloseab
         this.targets.main = framepass.readsAndWrites(this.targets.main);
         if(Curses.ClearBuffer == Enums.BrokeBuffer.None) {
             framepass.executes(() -> {
-                RenderSystem.clearColor(vector4f.x, vector4f.y, vector4f.z, 0.0F);
+                RenderSystem.clearColor(fog_color.x, fog_color.y, fog_color.z, 0.0F);
                 RenderSystem.clear(16640);
             });
-            if (!flag1) {
+            if (!idk) {
                 this.addSkyPass(framegraphbuilder, p_109604_, f, fogparameters1);
             }
         }

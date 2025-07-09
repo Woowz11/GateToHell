@@ -1,9 +1,30 @@
 package com.mojang.blaze3d.platform;
 
+import com.gatetohell.Initializing;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.jtracy.MemoryPool;
 import com.mojang.jtracy.TracyClient;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.gui.font.providers.FreeTypeUtil;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.PngInfo;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.io.IOUtils;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.stb.STBIWriteCallback;
+import org.lwjgl.stb.STBImage;
+import org.lwjgl.stb.STBImageResize;
+import org.lwjgl.stb.STBImageWrite;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.util.freetype.FT_Bitmap;
+import org.lwjgl.util.freetype.FT_Face;
+import org.lwjgl.util.freetype.FT_GlyphSlot;
+import org.lwjgl.util.freetype.FreeType;
+import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,24 +39,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.IntUnaryOperator;
-import javax.annotation.Nullable;
-import net.minecraft.client.gui.font.providers.FreeTypeUtil;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.PngInfo;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.io.IOUtils;
-import org.lwjgl.stb.STBIWriteCallback;
-import org.lwjgl.stb.STBImage;
-import org.lwjgl.stb.STBImageResize;
-import org.lwjgl.stb.STBImageWrite;
-import org.lwjgl.system.MemoryStack;
-import org.lwjgl.system.MemoryUtil;
-import org.lwjgl.util.freetype.FT_Bitmap;
-import org.lwjgl.util.freetype.FT_Face;
-import org.lwjgl.util.freetype.FT_GlyphSlot;
-import org.lwjgl.util.freetype.FreeType;
-import org.slf4j.Logger;
 
 @OnlyIn(Dist.CLIENT)
 public final class NativeImage implements AutoCloseable {
@@ -377,8 +380,8 @@ public final class NativeImage implements AutoCloseable {
         RenderSystem.assertOnRenderThread();
         this.checkAllocated();
         this.format.setPackPixelStoreState();
-        GlStateManager._getTexImage(3553, p_85046_, this.format.glFormat(), 5121, this.pixels);
-        if (p_85047_ && this.format.hasAlpha()) {
+        GlStateManager._getTexImage(GL11.GL_TEXTURE_2D, p_85046_, this.format.glFormat(), GL11.GL_UNSIGNED_BYTE, this.pixels);
+        if (p_85047_ && this.format.hasAlpha() && !Initializing.TransparentBuffer) {
             for (int i = 0; i < this.getHeight(); i++) {
                 for (int j = 0; j < this.getWidth(); j++) {
                     this.setPixelABGR(j, i, this.getPixelABGR(j, i) | 255 << this.format.alphaOffset());

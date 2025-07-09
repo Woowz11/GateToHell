@@ -7,12 +7,14 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import java.util.Objects;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.CompiledShaderProgram;
 import net.minecraft.client.renderer.CoreShaders;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class RenderTarget {
@@ -91,15 +93,15 @@ public abstract class RenderTarget {
             if (this.useDepth) {
                 this.depthBufferId = TextureUtil.generateTextureId();
                 GlStateManager._bindTexture(this.depthBufferId);
-                GlStateManager._texParameter(3553, 10241, 9728);
-                GlStateManager._texParameter(3553, 10240, 9728);
-                GlStateManager._texParameter(3553, 34892, 0);
-                GlStateManager._texParameter(3553, 10242, 33071);
-                GlStateManager._texParameter(3553, 10243, 33071);
-                GlStateManager._texImage2D(3553, 0, 6402, this.width, this.height, 0, 6402, 5126, null);
+                GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, 9728);
+                GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, 9728);
+                GlStateManager._texParameter(GL11.GL_TEXTURE_2D, 34892, 0);
+                GlStateManager._texParameter(GL11.GL_TEXTURE_2D, 10242, 33071);
+                GlStateManager._texParameter(GL11.GL_TEXTURE_2D, 10243, 33071);
+                GlStateManager._texImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_DEPTH_COMPONENT, this.width, this.height, 0, GL11.GL_DEPTH_COMPONENT, GL11.GL_FLOAT, null);
             }
 
-            this.setFilterMode(9728, true);
+            this.setFilterMode(GL11.GL_NEAREST, true);
             GlStateManager._bindTexture(this.colorTextureId);
             GlStateManager._texParameter(3553, 10242, 33071);
             GlStateManager._texParameter(3553, 10243, 33071);
@@ -212,7 +214,7 @@ public abstract class RenderTarget {
     public void clear() {
         RenderSystem.assertOnRenderThreadOrInit();
         this.bindWrite(true);
-        GlStateManager._clearColor(this.clearChannels[0], this.clearChannels[1], this.clearChannels[2], this.clearChannels[3]);
+        GlStateManager._clearColor(this.clearChannels[RED_CHANNEL], this.clearChannels[GREEN_CHANNEL], this.clearChannels[BLUE_CHANNEL], this.clearChannels[ALPHA_CHANNEL]);
         int i = 16384;
         if (this.useDepth) {
             GlStateManager._clearDepth(1.0);
